@@ -2,78 +2,137 @@
   display: flex;
   flex-direction: column;
   text-align: center;
+  padding: 60px 20px;
+  animation: fadeInUp 0.8s ease 0.3s both;
 }
 
 form {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 24px;
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 textarea,
 input:not([type='submit']) {
-  height: 50px;
-  padding-left: 16px;
-  width: 250px;
+  height: 56px;
+  padding: 0 20px;
+  width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  font-size: 16px;
 }
 
 textarea {
-  padding-top: 16px;
+  padding: 20px;
   resize: none;
-  height: 250px;
+  height: 200px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
 }
 
 input,
 textarea {
   border-radius: 20px;
-  border: #888 1px solid;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
   box-sizing: border-box;
-  justify-self: center;
-  background-color: var(--background-color);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
   color: var(--form-text-color);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2),
+              0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3),
+              0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+              0 0 0 3px rgba(139, 92, 246, 0.2);
 }
 
 ::placeholder {
-  color: var(--form-text-color);
+  color: var(--text-secondary);
+  opacity: 0.7;
 }
 
 input[type='submit'] {
-  background-color: var(--btn-color);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
   color: var(--btn-text-color);
-  border: none;
-  border-radius: 20px;
-  width: 126px;
-  height: 50px;
-  font-size: 20px;
-  font-weight: bold;
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-  transition: box-shadow 200ms ease-in-out, transform 200ms ease-in-out;
-  margin: auto;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
+  width: 140px;
+  height: 52px;
+  font-size: 17px;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25),
+              0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  margin: 12px auto 0;
+  cursor: pointer;
+  letter-spacing: 0.01em;
 }
 
 input[type='submit']:hover {
-  transform: scale(1.05);
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35),
+              0 0 0 1px rgba(255, 255, 255, 0.2) inset,
+              0 4px 12px rgba(139, 92, 246, 0.3);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 input[type='submit']:active {
-  transform: translateY(2px);
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
+  transform: translateY(0px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (width >= 800px) {
+  .container {
+    padding: 80px 40px;
+  }
+
+  form {
+    gap: 28px;
+    max-width: 700px;
+  }
+
   textarea,
   input:not([type='submit']) {
-    width: 600px;
-    font-size: 20px;
+    height: 60px;
+    font-size: 18px;
+    padding: 0 24px;
   }
-  form {
-    gap: 40px;
+
+  textarea {
+    height: 220px;
+    padding: 24px;
   }
 }
 
 @media (width >= 1400px) {
-  textarea,
-  input:not([type='submit']) {
-    width: 800px;
+  form {
+    max-width: 800px;
+  }
+
+  textarea {
+    height: 240px;
   }
 }

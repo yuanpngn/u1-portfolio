@@ -1,7 +1,38 @@
 .container {
   text-align: center;
-  p {
-    font-size: 16px;
-    color: var(--footer-text-color);
+  padding: 30px 20px 20px;
+  margin-top: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  animation: fadeIn 1s ease 0.5s both;
+  min-height: auto;
+}
+
+.container p {
+  font-size: 13px;
+  color: var(--footer-text-color);
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+[data-theme='light'] .container {
+  border-top-color: rgba(0, 0, 0, 0.08);
+}
+
+@media (width >= 800px) {
+  .container {
+    padding: 30px 40px 25px;
+  }
+
+  .container p {
+    font-size: 14px;
   }
 }

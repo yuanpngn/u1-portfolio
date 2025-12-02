@@ -1,7 +1,5 @@
 import styles from './HeroStyles.module.css';
 import heroImg from '../../assets/yuan.png';
-import sun from '../../assets/sun.svg';
-import moon from '../../assets/moon.svg';
 import twitterLight from '../../assets/twitter-light.svg';
 import twitterDark from '../../assets/twitter-dark.svg';
 import githubLight from '../../assets/github-light.svg';
@@ -12,9 +10,8 @@ import CV from '../../assets/cv.pdf';
 import { useTheme } from '../../common/ThemeContext';
 
 function Hero() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
 
-  const themeIcon = theme === 'light' ? sun : moon;
   const twitterIcon = theme === 'light' ? twitterLight : twitterDark;
   const githubIcon = theme === 'light' ? githubLight : githubDark;
   const linkedinIcon = theme === 'light' ? linkedinLight : linkedinDark;
@@ -27,37 +24,35 @@ function Hero() {
           className={styles.hero}
           alt="Profile picture of Yuan Pangan"
         />
-        <img
-          className={styles.colorMode}
-          src={themeIcon}
-          alt="Color mode icon"
-          onClick={toggleTheme}
-        />
       </div>
-      <div className={styles.info}>
-        <h1>
-          Yuan
-          <br />
-          Pangan
-        </h1>
-        <h2>CS Student || Fullstack Dev</h2>
-        <span>
-          <a href="https://www.instagram.com/yuanpngn?igsh=bXBxbXhqbTJ2Mms5&utm_source=qr" target="_blank">
-            <img src={twitterIcon} alt="IG icon" />
+      <div className={styles.content}>
+        <div className={styles.info}>
+          <h1>
+            Yuan
+            <br />
+            Pangan
+          </h1>
+          <h2>Computer Science Student & Full-Stack Developer</h2>
+          <span>
+            <a href="https://www.instagram.com/yuanpngn?igsh=bXBxbXhqbTJ2Mms5&utm_source=qr" target="_blank" rel="noopener noreferrer">
+              <img src={twitterIcon} alt="Instagram" />
+            </a>
+            <a href="https://github.com/yuanpngn" target="_blank" rel="noopener noreferrer">
+              <img src={githubIcon} alt="GitHub" />
+            </a>
+            <a href="https://www.linkedin.com/in/yuan-pangan-043245235" target="_blank" rel="noopener noreferrer">
+              <img src={linkedinIcon} alt="LinkedIn" />
+            </a>
+          </span>
+        </div>
+        <div className={styles.descriptionSection}>
+          <p className={styles.description}>
+            Passionate software engineer specializing in full-stack development, machine learning, and cloud technologies. Currently pursuing Computer Science at De La Salle University - Manila, building innovative solutions from VR experiences to telemedicine platforms.
+          </p>
+          <a href={CV} download>
+            <button className="hover">Download Resume</button>
           </a>
-          <a href="https://github.com/pngnyume" target="_blank">
-            <img src={githubIcon} alt="Github icon" />
-          </a>
-          <a href="https://www.linkedin.com/in/yuan-pangan-043245235?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank">
-            <img src={linkedinIcon} alt="Linkedin icon" />
-          </a>
-        </span>
-        <p className={styles.description}>
-          Software Engineer || Innovative and motivated second-year Computer Science undergraduate at De La Salle University - Manila.
-        </p>
-        <a href={CV} download>
-          <button className="hover">Resume</button>
-        </a>
+        </div>
       </div>
     </section>
   );
