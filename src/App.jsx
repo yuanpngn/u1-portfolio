@@ -6,6 +6,7 @@ import Hero from './sections/Hero/Hero';
 import Projects from './sections/Projects/Projects';
 import Skills from './sections/Skills/Skills';
 import Experience from './sections/Experience/Experience';
+import Commonplace from './sections/Commonplace/Commonplace';
 import ScrollProgress from './common/ScrollProgress';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
       <Projects />
       <Skills />
       <Experience />
+      <Commonplace />
       <Contact />
       <Footer />
     </>

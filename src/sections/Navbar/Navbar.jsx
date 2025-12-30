@@ -15,7 +15,7 @@ function Navbar() {
       setScrolled(window.scrollY > 50);
       
       // Detect active section
-      const sections = ['hero', 'projects', 'skills', 'experience', 'contact'];
+      const sections = ['hero', 'projects', 'skills', 'experience', 'commonplace', 'contact'];
       const scrollPosition = window.scrollY + window.innerHeight / 2;
       
       for (const sectionId of sections) {
@@ -86,6 +86,12 @@ function Navbar() {
             className={`${styles.navLink} ${activeSection === 'experience' ? styles.active : ''}`}
           >
             Experience
+          </button>
+          <button 
+            onClick={() => scrollToSection('commonplace')} 
+            className={`${styles.navLink} ${activeSection === 'commonplace' ? styles.active : ''}`}
+          >
+            Commonplace
           </button>
           <button 
             onClick={() => scrollToSection('contact')} 
