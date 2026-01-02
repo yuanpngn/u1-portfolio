@@ -1,4 +1,6 @@
 import './App.css';
+import { AdminProvider } from './common/AdminContext';
+import AdminPanel from './common/AdminPanel';
 import Navbar from './sections/Navbar/Navbar';
 import Contact from './sections/Contact/Contact';
 import Footer from './sections/Footer/Footer';
@@ -11,7 +13,7 @@ import ScrollProgress from './common/ScrollProgress';
 
 function App() {
   return (
-    <>
+    <AdminProvider>
       <ScrollProgress />
       <Navbar />
       <Hero />
@@ -21,7 +23,8 @@ function App() {
       <Commonplace />
       <Contact />
       <Footer />
-    </>
+      <AdminPanel />
+    </AdminProvider>
   );
 }
 

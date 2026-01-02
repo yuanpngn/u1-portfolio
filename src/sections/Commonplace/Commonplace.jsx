@@ -1,19 +1,17 @@
 import { useState, useEffect } from 'react';
-import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, query, orderBy, Timestamp } from 'firebase/firestore';
-import { auth, db } from '../../firebase/config';
+import { db } from '../../firebase/config';
+import { useAdmin } from '../../common/AdminContext';
 import styles from './CommonplaceStyles.module.css';
-import AdminLogin from './AdminLogin';
 import EntryForm from './EntryForm';
 import EntryCard from './EntryCard';
 
 function Commonplace() {
-  const [isAdmin, setIsAdmin] = useState(false);
+  const { isAdmin } = useAdmin();
   const [entries, setEntries] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [showEntryForm, setShowEntryForm] = useState(false);
   const [editingEntry, setEditingEntry] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const categories = [
@@ -25,16 +23,7 @@ function Commonplace() {
   ];
 
   useEffect(() => {
-    // Listen to authentication state changes
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setIsAdmin(!!user);
-      setLoading(false);
-    });
-
-    // Load entries from Firestore
     loadEntries();
-
-    return () => unsubscribe();
   }, []);
 
   const loadEntries = async () => {
@@ -47,27 +36,17 @@ function Commonplace() {
         createdAt: doc.data().createdAt?.toDate?.()?.toISOString() || new Date().toISOString(),
         updatedAt: doc.data().updatedAt?.toDate?.()?.toISOString() || new Date().toISOString(),
       }));
+      
+      // Sort entries: pinned first, then by date
+      loadedEntries.sort((a, b) => {
+        if (a.isPinned && !b.isPinned) return -1;
+        if (!a.isPinned && b.isPinned) return 1;
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      });
+      
       setEntries(loadedEntries);
     } catch (error) {
       console.error('Error loading entries:', error);
-    }
-  };
-
-  const handleLogin = async (email, password) => {
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      return true;
-    } catch (error) {
-      console.error('Login error:', error);
-      return false;
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-    } catch (error) {
-      console.error('Logout error:', error);
     }
   };
 
@@ -114,6 +93,19 @@ function Commonplace() {
     }
   };
 
+  const togglePin = async (entry) => {
+    try {
+      const entryRef = doc(db, 'entries', entry.id);
+      await updateDoc(entryRef, {
+        isPinned: !entry.isPinned
+      });
+      await loadEntries();
+    } catch (error) {
+      console.error('Error toggling pin:', error);
+      alert('Failed to toggle pin');
+    }
+  };
+
   const handleEdit = (entry) => {
     setEditingEntry(entry);
     setShowEntryForm(true);
@@ -146,10 +138,6 @@ function Commonplace() {
         </p>
       </div>
 
-      {!isAdmin && (
-        <AdminLogin onLogin={handleLogin} />
-      )}
-
       {isAdmin && (
         <div className={styles.adminControls}>
           <button 
@@ -160,12 +148,6 @@ function Commonplace() {
             }}
           >
             + Add New Entry
-          </button>
-          <button 
-            className={styles.logoutButton}
-            onClick={handleLogout}
-          >
-            Logout
           </button>
         </div>
       )}
@@ -212,6 +194,7 @@ function Commonplace() {
               isAdmin={isAdmin}
               onEdit={() => handleEdit(entry)}
               onDelete={() => handleDeleteEntry(entry.id)}
+              onTogglePin={() => togglePin(entry)}
             />
           ))
         )}

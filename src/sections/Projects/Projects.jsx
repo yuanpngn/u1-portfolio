@@ -1,107 +1,146 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { db } from '../../firebase/config';
+import { useAdmin } from '../../common/AdminContext';
 import styles from './ProjectsStyles.module.css';
 import ProjectCard from '../../common/ProjectCard';
 import ProjectModal from '../../common/ProjectModal';
 
 function Projects() {
+  const { isAdmin } = useAdmin();
   const [selectedProject, setSelectedProject] = useState(null);
+  const [projects, setProjects] = useState([]);
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [editingProject, setEditingProject] = useState(null);
 
-  const projects = [
-    {
-      id: 1,
-      title: "FeVR: Acrophobia Simulator",
-      shortDesc: "VR-based therapeutic exposure simulator",
-      fullDesc: "An immersive Virtual Reality application designed to help individuals overcome acrophobia (fear of heights) through controlled exposure therapy. Built with Unity and C#, featuring realistic environments and progressive difficulty levels.",
-      technologies: ["Unity", "C#", "VR Development", "Oculus SDK", "3D Modeling"],
-      github: "https://github.com/yuanpngn/feVR.git",
-      highlights: [
-        "Realistic VR environments with dynamic height scenarios",
-        "Progressive difficulty system for gradual exposure",
-        "Real-time biometric feedback integration",
-        "Customizable therapy sessions"
-      ],
-      category: "VR Development",
-      status: "Completed"
-    },
-    {
-      id: 2,
-      title: "BiteBoxd",
-      shortDesc: "Social food review platform",
-      fullDesc: "A comprehensive food review web application that combines social networking features with restaurant discovery. Users can rate, review, and share their dining experiences while connecting with fellow food enthusiasts.",
-      technologies: ["React", "Node.js", "MongoDB", "Express", "Tailwind CSS"],
-      github: "https://github.com/yuanpngn/MCO3-Biteboxd",
-      highlights: [
-        "User authentication and profile management",
-        "Real-time review posting and interaction",
-        "Restaurant search and filtering system",
-        "Social features: follow, like, and comment"
-      ],
-      category: "Full-Stack Web",
-      status: "Active Development"
-    },
-    {
-      id: 3,
-      title: "ML Prediction Models",
-      shortDesc: "Machine learning analysis project",
-      fullDesc: "Advanced machine learning project implementing Linear Regression and Random Forest algorithms for predictive analytics. Includes comprehensive data preprocessing, feature engineering, and model evaluation.",
-      technologies: ["Python", "Scikit-learn", "Pandas", "NumPy", "Matplotlib"],
-      github: "https://github.com/yuanpngn/STINTSY_MLP",
-      highlights: [
-        "Implemented multiple regression algorithms",
-        "Feature engineering and selection",
-        "Cross-validation and hyperparameter tuning",
-        "Data visualization and analysis"
-      ],
-      category: "Machine Learning",
-      status: "Completed"
-    },
-    {
-      id: 4,
-      title: "MR.Drone (Ongoing Thesis)",
-      shortDesc: "Mixed Reality system for interactive drone performances",
-      fullDesc: "A Mixed Reality system that integrates drones into interactive performances. Developed using Unity and C#, this project explores how spatial computing and aerial movement can enhance performative environments, blending technology with the arts. Currently in the final stages with only user study remaining.",
-      technologies: ["Unity", "C#", "Mixed Reality", "Spatial Computing", "Crazyflie", "Computer Vision"],
-      github: "https://github.com/yuanpngn/cf_routine",
-      conferencePaper: "/src/assets/MRDrone_ConferencePaper.pdf",
-      highlights: [
-        "Integration of drones into Mixed Reality environments",
-        "Interactive performance system with spatial computing",
-        "Real-time drone choreography and control",
-        "Blending technology with performative arts",
-        "Conference paper published (User study pending)"
-      ],
-      category: "Mixed Reality",
-      status: "Ongoing (Thesis)"
-    },
-    {
-      id: 5,
-      title: "MediSync",
-      shortDesc: "Cloud-based telemedicine platform",
-      fullDesc: "A comprehensive telemedicine application built on AWS infrastructure, enabling secure video consultations, appointment scheduling, and electronic health records management. Features HIPAA-compliant data handling.",
-      technologies: ["AWS", "React", "Lambda", "DynamoDB", "WebRTC", "S3"],
-      github: "https://github.com/yuanpngn/MediSync",
-      highlights: [
-        "Secure video consultation system",
-        "Electronic health records (EHR) management",
-        "Appointment scheduling and reminders",
-        "AWS serverless architecture",
-        "HIPAA-compliant data encryption"
-      ],
-      category: "Cloud Computing",
-      status: "Completed"
+  useEffect(() => {
+    loadProjects();
+  }, []);
+
+  const loadProjects = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, 'projects'));
+      const loadedProjects = querySnapshot.docs.map(doc => ({
+        ...doc.data(),
+        firestoreId: doc.id
+      }));
+      
+      // Sort projects: pinned first, then by order
+      loadedProjects.sort((a, b) => {
+        if (a.isPinned && !b.isPinned) return -1;
+        if (!a.isPinned && b.isPinned) return 1;
+        return 0;
+      });
+      
+      setProjects(loadedProjects);
+    } catch (error) {
+      console.error('Error loading projects:', error);
+      setProjects([]);
     }
-  ];
+  };
+
+  const togglePin = async (project) => {
+    try {
+      await updateDoc(doc(db, 'projects', project.firestoreId), {
+        isPinned: !project.isPinned
+      });
+      await loadProjects();
+    } catch (error) {
+      console.error('Error toggling pin:', error);
+      alert('Failed to toggle pin');
+    }
+  };
+
+  const handleAddProject = () => {
+    setEditingProject({
+      title: '',
+      shortDesc: '',
+      fullDesc: '',
+      technologies: [],
+      github: '',
+      highlights: [],
+      category: '',
+      status: '',
+      conferencePaper: '',
+      isPinned: false
+    });
+    setShowEditForm(true);
+  };
+
+  const handleEditProject = (project) => {
+    setEditingProject(project);
+    setShowEditForm(true);
+  };
+
+  const handleSaveProject = async (projectData) => {
+    try {
+      if (projectData.firestoreId) {
+        // Update existing
+        await updateDoc(doc(db, 'projects', projectData.firestoreId), projectData);
+      } else {
+        // Add new
+        await addDoc(collection(db, 'projects'), projectData);
+      }
+      await loadProjects();
+      setShowEditForm(false);
+      setEditingProject(null);
+    } catch (error) {
+      console.error('Error saving project:', error);
+      alert('Failed to save project');
+    }
+  };
+
+  const handleDeleteProject = async (firestoreId) => {
+    if (window.confirm('Are you sure you want to delete this project?')) {
+      try {
+        await deleteDoc(doc(db, 'projects', firestoreId));
+        await loadProjects();
+      } catch (error) {
+        console.error('Error deleting project:', error);
+        alert('Failed to delete project');
+      }
+    }
+  };
 
   return (
     <section id="projects" className={styles.container}>
-      <h1 className="sectionTitle">Projects</h1>
+      <div className={styles.header}>
+        <h1 className="sectionTitle">Projects</h1>
+        {isAdmin && (
+          <button className={styles.addButton} onClick={handleAddProject}>
+            + Add Project
+          </button>
+        )}
+      </div>
       <div className={styles.projectsGrid}>
         {projects.map((project) => (
-          <ProjectCard
-            key={project.id}
-            project={project}
-            onClick={() => setSelectedProject(project)}
-          />
+          <div 
+            key={project.id || project.firestoreId} 
+            className={styles.projectWrapper}
+            data-pinned={project.isPinned || false}
+          >
+            <ProjectCard
+              project={project}
+              onClick={() => setSelectedProject(project)}
+            />
+            {isAdmin && (
+              <div className={styles.adminControls}>
+                <button onClick={() => handleEditProject(project)}>✏️ Edit</button>
+                {project.firestoreId && (
+                  <>
+                    <button 
+                      onClick={() => togglePin(project)}
+                      className={project.isPinned ? styles.pinnedButton : ''}
+                      title={project.isPinned ? 'Unpin project' : 'Pin project'}
+                    >
+                      {project.isPinned ? '⭐ Pinned' : '☆ Pin'}
+                    </button>
+                    <button onClick={() => handleDeleteProject(project.firestoreId)}>🗑️ Delete</button>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
         ))}
       </div>
       
@@ -111,7 +150,129 @@ function Projects() {
           onClose={() => setSelectedProject(null)}
         />
       )}
+
+      {showEditForm && (
+        <ProjectEditForm
+          project={editingProject}
+          onSave={handleSaveProject}
+          onCancel={() => {
+            setShowEditForm(false);
+            setEditingProject(null);
+          }}
+        />
+      )}
     </section>
+  );
+}
+
+function ProjectEditForm({ project, onSave, onCancel }) {
+  const [formData, setFormData] = useState({
+    ...project,
+    technologies: project.technologies || [],
+    highlights: project.highlights || []
+  });
+
+  const handleChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleArrayChange = (field, value) => {
+    const array = value.split('\n').filter(item => item.trim());
+    setFormData(prev => ({ ...prev, [field]: array }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave(formData);
+  };
+
+  return (
+    <div className={styles.editOverlay} onClick={onCancel}>
+      <div className={styles.editForm} onClick={(e) => e.stopPropagation()}>
+        <h3>{project.firestoreId ? 'Edit Project' : 'Add New Project'}</h3>
+        <form onSubmit={handleSubmit}>
+          <label>
+            Title:
+            <input
+              type="text"
+              value={formData.title}
+              onChange={(e) => handleChange('title', e.target.value)}
+              required
+            />
+          </label>
+
+          <label>
+            Short Description:
+            <input
+              type="text"
+              value={formData.shortDesc}
+              onChange={(e) => handleChange('shortDesc', e.target.value)}
+              required
+            />
+          </label>
+
+          <label>
+            Full Description:
+            <textarea
+              value={formData.fullDesc}
+              onChange={(e) => handleChange('fullDesc', e.target.value)}
+              rows={4}
+              required
+            />
+          </label>
+
+          <label>
+            Technologies (one per line):
+            <textarea
+              value={formData.technologies?.join('\n') || ''}
+              onChange={(e) => handleArrayChange('technologies', e.target.value)}
+              rows={3}
+            />
+          </label>
+
+          <label>
+            GitHub URL:
+            <input
+              type="url"
+              value={formData.github}
+              onChange={(e) => handleChange('github', e.target.value)}
+            />
+          </label>
+
+          <label>
+            Highlights (one per line):
+            <textarea
+              value={formData.highlights?.join('\n') || ''}
+              onChange={(e) => handleArrayChange('highlights', e.target.value)}
+              rows={4}
+            />
+          </label>
+
+          <label>
+            Category:
+            <input
+              type="text"
+              value={formData.category}
+              onChange={(e) => handleChange('category', e.target.value)}
+            />
+          </label>
+
+          <label>
+            Status:
+            <input
+              type="text"
+              value={formData.status}
+              onChange={(e) => handleChange('status', e.target.value)}
+            />
+          </label>
+
+          <div className={styles.formButtons}>
+            <button type="submit">Save Project</button>
+            <button type="button" onClick={onCancel}>Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }
 

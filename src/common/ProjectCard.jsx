@@ -25,10 +25,10 @@ function ProjectCard({ project, onClick }) {
       <p className={styles.description}>{project.shortDesc}</p>
       
       <div className={styles.techStack}>
-        {project.technologies.slice(0, 3).map((tech, index) => (
+        {project.technologies?.slice(0, 3).map((tech, index) => (
           <span key={index} className={styles.techBadge}>{tech}</span>
         ))}
-        {project.technologies.length > 3 && (
+        {project.technologies?.length > 3 && (
           <span className={styles.techBadge}>+{project.technologies.length - 3}</span>
         )}
       </div>

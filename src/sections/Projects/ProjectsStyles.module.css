@@ -6,11 +6,177 @@
   animation: fadeInUp 0.8s ease;
 }
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+  width: 100%;
+}
+
+.addButton {
+  padding: 0.75rem 1.5rem;
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  border-radius: 8px;
+  color: var(--text-color);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.addButton:hover {
+  background: rgba(139, 92, 246, 0.3);
+  border-color: rgba(139, 92, 246, 0.6);
+}
+
+.projectWrapper {
+  position: relative;
+}
+
+.projectWrapper[data-pinned="true"]::before {
+  content: '⭐';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  z-index: 10;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.adminControls {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.adminControls button {
+  padding: 0.5rem 1rem;
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  border-radius: 6px;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.adminControls button:hover {
+  background: rgba(139, 92, 246, 0.3);
+}
+
+.pinnedButton {
+  background: rgba(255, 215, 0, 0.2) !important;
+  border-color: rgba(255, 215, 0, 0.5) !important;
+}
+
+.pinnedButton:hover {
+  background: rgba(255, 215, 0, 0.3) !important;
+  border-color: rgba(255, 215, 0, 0.6) !important;
+}
+
+.editOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.editForm {
+  background: var(--background-color);
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 85vh;
+  overflow-y: auto;
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  text-align: left;
+  margin: auto;
+}
+
+.editForm h3 {
+  margin-bottom: 1.5rem;
+  color: rgb(139, 92, 246);
+}
+
+.editForm label {
+  display: block;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.editForm input,
+.editForm textarea {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 0.25rem;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 6px;
+  color: var(--text-color);
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.editForm input:focus,
+.editForm textarea:focus {
+  outline: none;
+  border-color: rgba(139, 92, 246, 0.6);
+}
+
+.formButtons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.formButtons button {
+  flex: 1;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.formButtons button[type="submit"] {
+  background: rgba(139, 92, 246, 0.3);
+  border: 1px solid rgba(139, 92, 246, 0.5);
+  color: var(--text-color);
+}
+
+.formButtons button[type="submit"]:hover {
+  background: rgba(139, 92, 246, 0.4);
+}
+
+.formButtons button[type="button"] {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-color);
+}
+
+.formButtons button[type="button"]:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
 .projectsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 28px;
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
   width: 100%;
 }

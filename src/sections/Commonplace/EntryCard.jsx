@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styles from './EntryCardStyles.module.css';
 
-function EntryCard({ entry, category, isAdmin, onEdit, onDelete }) {
+function EntryCard({ entry, category, isAdmin, onEdit, onDelete, onTogglePin }) {
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
@@ -26,7 +26,7 @@ function EntryCard({ entry, category, isAdmin, onEdit, onDelete }) {
 
   return (
     <>
-      <div className={styles.card}>
+      <div className={styles.card} data-pinned={entry.isPinned || false}>
         <div className={styles.cardHeader}>
           <div className={styles.categoryBadge}>
             <span className={styles.categoryIcon}>{category?.icon}</span>
@@ -34,6 +34,13 @@ function EntryCard({ entry, category, isAdmin, onEdit, onDelete }) {
           </div>
           {isAdmin && (
             <div className={styles.adminActions}>
+              <button 
+                className={`${styles.pinButton} ${entry.isPinned ? styles.pinned : ''}`}
+                onClick={onTogglePin}
+                title={entry.isPinned ? 'Unpin entry' : 'Pin entry'}
+              >
+                {entry.isPinned ? '📌' : '📍'}
+              </button>
               <button 
                 className={styles.editButton}
                 onClick={onEdit}
