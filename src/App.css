@@ -184,7 +184,7 @@ p {
 .sectionTitle {
   margin-bottom: 40px;
   text-align: center;
-  font-size: 40px;
+  font-size: 32px;
   position: relative;
   padding-bottom: 20px;
 }
@@ -278,7 +278,7 @@ p {
 
   .sectionTitle {
     margin-bottom: 60px;
-    font-size: 48px;
+    font-size: 38px;
   }
 }
 
@@ -288,11 +288,11 @@ p {
   }
   
   h1 {
-    font-size: 64px;
+    font-size: 52px;
   }
 
   .sectionTitle {
     margin-bottom: 75px;
-    font-size: 56px;
+    font-size: 42px;
   }
 }
