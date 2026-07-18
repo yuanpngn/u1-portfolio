@@ -3,7 +3,9 @@ import { useTheme } from './ThemeContext';
 import { useIsMobile } from './useIsMobile';
 import styles from './Decor.module.css';
 
-function ParticlesCanvas() {
+const ASCII_RAMP = ' .:-=+*#%@';
+
+function AsciiField() {
   const canvasRef = useRef(null);
   const { theme } = useTheme();
   const themeRef = useRef(theme);
@@ -14,60 +16,82 @@ function ParticlesCanvas() {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
+
+    const cell = 18;
+    let cols = 0;
+    let rows = 0;
+    let phase = new Float32Array(0);
+    const mouse = { x: -9999, y: -9999 };
+
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      cols = Math.ceil(canvas.width / cell) + 1;
+      rows = Math.ceil(canvas.height / cell) + 1;
+      phase = new Float32Array(cols * rows);
+      for (let i = 0; i < phase.length; i++) phase[i] = Math.random() * Math.PI * 2;
     };
     resize();
     window.addEventListener('resize', resize);
 
-    const count = Math.min(60, Math.floor((window.innerWidth * window.innerHeight) / 26000));
-    const particles = Array.from({ length: count }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
-    }));
-
-    let rafId;
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const dotColor = themeRef.current === 'dark' ? 'rgba(255,90,60,0.55)' : 'rgba(226,61,31,0.4)';
-      const lineColor = themeRef.current === 'dark' ? 'rgba(245,241,232,0.08)' : 'rgba(17,17,17,0.07)';
-      for (const p of particles) {
-        if (!reduceMotion) {
-          p.x += p.vx;
-          p.y += p.vy;
-        }
-        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-      }
-      ctx.fillStyle = dotColor;
-      for (const p of particles) {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 1.8, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.strokeStyle = lineColor;
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const d2 = dx * dx + dy * dy;
-          if (d2 < 130 * 130) {
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.stroke();
-          }
-        }
-      }
-      if (!reduceMotion) rafId = requestAnimationFrame(draw);
+    const onMove = (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
     };
-    draw();
+    window.addEventListener('mousemove', onMove);
+
+    ctx.font = `${cell - 3}px "SF Mono", Menlo, monospace`;
+    ctx.textBaseline = 'top';
+
+    const frameInterval = 1000 / 24;
+    let last = 0;
+    let rafId;
+
+    const draw = (t) => {
+      rafId = requestAnimationFrame(draw);
+      if (t - last < frameInterval) return;
+      last = t;
+
+      const time = t * 0.0007;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const base = themeRef.current === 'dark' ? '245,241,232' : '17,17,17';
+      const accent = themeRef.current === 'dark' ? '255,90,60' : '226,61,31';
+      const rampLen = ASCII_RAMP.length;
+
+      for (let row = 0; row < rows; row++) {
+        const y = row * cell;
+        for (let col = 0; col < cols; col++) {
+          const idx = row * cols + col;
+          const x = col * cell;
+          const ph = phase[idx];
+
+          const wave = reduceMotion
+            ? Math.sin(col * 0.25 + ph) + Math.sin(row * 0.22 + ph * 0.5)
+            : Math.sin(col * 0.25 + time * 1.3 + ph) + Math.sin(row * 0.22 - time * 1.1 + ph * 0.5);
+          const raw = (wave + 2) / 4;
+
+          const dx = x - mouse.x;
+          const dy = y - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const near = dist < 110 ? 1 - dist / 110 : 0;
+
+          const threshold = 0.64;
+          if (raw < threshold && near < 0.05) continue;
+          const brightness = Math.max(0, raw - threshold) / (1 - threshold);
+
+          const level = Math.min(rampLen - 1, Math.max(1, Math.floor((brightness + near * 0.85) * (rampLen - 1))));
+          const alpha = Math.min(0.8, 0.04 + brightness * 0.14 + near * 0.55);
+          ctx.fillStyle = near > 0.3 ? `rgba(${accent},${alpha})` : `rgba(${base},${alpha})`;
+          ctx.fillText(ASCII_RAMP[level], x, y);
+        }
+      }
+    };
+    rafId = requestAnimationFrame(draw);
 
     return () => {
       window.removeEventListener('resize', resize);
+      window.removeEventListener('mousemove', onMove);
       if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
@@ -117,7 +141,7 @@ function Decor({ showParticles = true, showCursorEffect = true, showDecor = true
       <a href="#main" className={styles.skipLink}>
         Skip to content
       </a>
-      {showParticles && <ParticlesCanvas />}
+      {showParticles && <AsciiField />}
       {showDecor && (
         <>
           <div className={styles.blob1} aria-hidden="true" />

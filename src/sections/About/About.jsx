@@ -4,6 +4,7 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import styles from './AboutStyles.module.css';
 import { useReveal } from '../../common/useReveal';
 import EditablePhoto from '../../common/EditablePhoto';
+import Crown from '../../common/Crown';
 import defaultPhoto from '../../assets/yuan.png';
 
 const DEFAULT_PARAGRAPHS = [
@@ -59,7 +60,9 @@ function About() {
     >
       <div className={styles.grid}>
         <div>
-          <div className={styles.eyebrow}>ABOUT ♛</div>
+          <div className={styles.eyebrow}>
+            ABOUT <Crown size={14} color="var(--dc-red)" />
+          </div>
           <div className={styles.headingWrap}>
             <h2 className={styles.h2}>I build things people actually want to use.</h2>
             <div className={styles.underline} />

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../../firebase/config';
 import { doc, getDoc } from 'firebase/firestore';
 import styles from './HeroStyles.module.css';
+import Crown from '../../common/Crown';
 import CV from '../../assets/cv.pdf';
 
 const HERO_CHIPS = ['Mixed Reality + Unity', 'VBA Automation', 'Node.js + MongoDB', 'Java + Spring Boot'];
@@ -75,7 +76,7 @@ function Hero() {
             className={styles.tiltCard}
             style={{ transform: `perspective(1000px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)` }}
           >
-            <div className={styles.heroCrown}>♛</div>
+            <Crown size={56} color="var(--dc-yellow)" className={styles.heroCrown} />
             {HERO_CHIPS.map((chip, i) => (
               <div key={chip} className={`${styles.chip} ${styles[`chip${i}`]}`}>
                 {chip}

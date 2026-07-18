@@ -31,7 +31,8 @@
 }
 
 .crown {
-  color: var(--dc-yellow);
+  margin-left: 2px;
+  transform: rotate(-4deg);
 }
 
 .navLinks {

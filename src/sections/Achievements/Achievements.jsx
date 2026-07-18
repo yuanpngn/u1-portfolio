@@ -5,6 +5,7 @@ import { useAdmin } from '../../common/AdminContext';
 import styles from './AchievementsStyles.module.css';
 import { useReveal } from '../../common/useReveal';
 import Portal from '../../common/Portal';
+import Crown from '../../common/Crown';
 
 function Achievements() {
   const { isAdmin } = useAdmin();
@@ -78,7 +79,9 @@ function Achievements() {
       className={`${styles.container} ${revealed ? styles.revealed : ''}`}
     >
       <div className={styles.inner}>
-        <div className={styles.eyebrow}>ACHIEVEMENTS ♛</div>
+        <div className={styles.eyebrow}>
+          ACHIEVEMENTS <Crown size={14} color="var(--dc-red)" />
+        </div>
         <div className={styles.headingWrap}>
           <h2 className={styles.h2}>Recognition along the way.</h2>
           <div className={styles.underline} />

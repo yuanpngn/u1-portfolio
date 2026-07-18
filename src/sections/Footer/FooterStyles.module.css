@@ -16,7 +16,7 @@
 }
 
 .crown {
-  color: var(--dc-yellow);
+  transform: rotate(3deg);
 }
 
 .devBtn {

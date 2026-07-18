@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styles from './FooterStyles.module.css';
 import Portal from '../../common/Portal';
+import Crown from '../../common/Crown';
 
 function Footer() {
   const [easterEggOpen, setEasterEggOpen] = useState(false);
@@ -9,7 +10,8 @@ function Footer() {
   return (
     <section id="footer" className={styles.container}>
       <span className={styles.text}>
-        © {year} Yuan Pangan. Built with curiosity <span className={styles.crown}>♛</span>
+        © {year} Yuan Pangan. Built with curiosity{' '}
+        <Crown size={16} color="var(--dc-yellow)" className={styles.crown} />
       </span>
       <button
         onClick={() => setEasterEggOpen((v) => !v)}

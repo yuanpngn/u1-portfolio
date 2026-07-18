@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import styles from './NavbarStyles.module.css';
 import { useTheme } from '../../common/ThemeContext';
 import { useIsMobile } from '../../common/useIsMobile';
+import Crown from '../../common/Crown';
 import CV from '../../assets/cv.pdf';
 
 const NAV_ITEMS = [
@@ -53,7 +54,7 @@ function Navbar() {
     <header className={styles.header}>
       <div className={styles.container}>
         <a href="#main" data-cursor-hover="true" className={styles.logo}>
-          Yuan<span className={styles.crown}>♛</span>
+          Yuan<Crown size={20} color="var(--dc-yellow)" className={styles.crown} />
         </a>
 
         {!isMobile && (

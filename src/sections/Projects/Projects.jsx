@@ -7,6 +7,7 @@ import ProjectCard from '../../common/ProjectCard';
 import ProjectModal from '../../common/ProjectModal';
 import { useReveal } from '../../common/useReveal';
 import Portal from '../../common/Portal';
+import Crown from '../../common/Crown';
 
 function Projects() {
   const { isAdmin } = useAdmin();
@@ -120,7 +121,9 @@ function Projects() {
       className={`${styles.container} ${revealed ? styles.revealed : ''}`}
     >
       <div className={styles.inner}>
-        <div className={styles.eyebrow}>PROJECTS ♛</div>
+        <div className={styles.eyebrow}>
+          PROJECTS <Crown size={14} color="var(--dc-red)" />
+        </div>
         <div className={styles.headingWrap}>
           <h2 className={styles.h2}>Selected work.</h2>
           <div className={styles.underline} />
