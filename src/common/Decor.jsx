@@ -110,9 +110,11 @@ function CursorEffect() {
     const onMove = (e) => {
       if (dotRef.current) {
         dotRef.current.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%,-50%)`;
+        dotRef.current.style.opacity = '1';
       }
       if (ringRef.current) {
         ringRef.current.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%,-50%)`;
+        ringRef.current.style.opacity = '1';
         const hoverEl = e.target.closest && e.target.closest('[data-cursor-hover]');
         ringRef.current.style.width = hoverEl ? '54px' : '34px';
         ringRef.current.style.height = hoverEl ? '54px' : '34px';

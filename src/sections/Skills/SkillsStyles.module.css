@@ -53,7 +53,7 @@
 
 .addButton {
   display: block;
-  margin: 0 0 20px;
+  margin: 0 0 30px;
   padding: 10px 20px;
   border-radius: 6px;
   border: 2px solid var(--dc-ink);
@@ -63,57 +63,73 @@
   cursor: pointer;
 }
 
-.catRow {
+.categoriesList {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
+  flex-direction: column;
+  gap: 34px;
   margin-top: 36px;
 }
 
-.catButton {
-  font: 700 13.5px Kalam, cursive;
-  padding: 10px 18px;
-  border-radius: 6px;
-  cursor: pointer;
-  border: 2px solid var(--dc-ink);
-  background: transparent;
-  color: var(--dc-ink);
-}
-
-.catButton.active {
-  background: var(--dc-ink);
-  color: var(--dc-cream);
-}
-
-.adminControls {
+.categoryGroup {
   display: flex;
-  gap: 0.5rem;
-  margin-bottom: 20px;
-}
-
-.adminControls button {
-  padding: 0.4rem 0.8rem;
-  background: transparent;
-  border: 1.5px solid var(--dc-border);
-  border-radius: 6px;
-  color: var(--dc-ink);
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-
-.chipGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  flex-direction: column;
   gap: 14px;
 }
 
-.chip {
+.categoryHeader {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 14px;
+}
+
+.categoryLabel {
+  font: 900 16px 'Archivo Black', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  margin: 0;
+  padding-bottom: 4px;
+  border-bottom: 3px solid currentColor;
+}
+
+.accentRed {
+  color: var(--dc-red);
+}
+
+.accentBlue {
+  color: var(--dc-blue);
+}
+
+.accentYellow {
+  color: var(--dc-ink);
+  border-bottom-color: var(--dc-yellow) !important;
+}
+
+.categoryAdmin {
+  display: flex;
+  gap: 6px;
+}
+
+.categoryAdmin button {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1.5px solid var(--dc-border);
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
   gap: 10px;
-  padding: 16px 18px;
+}
+
+.chip {
+  padding: 10px 16px;
   border-radius: 8px;
   background: var(--dc-card-bg);
   border: 2px solid var(--dc-ink);
@@ -125,16 +141,8 @@
 }
 
 .chipLabel {
-  font: 700 15px Kalam, cursive;
+  font: 700 14px Kalam, cursive;
   color: var(--dc-ink);
-}
-
-.chipDot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--dc-red);
-  flex-shrink: 0;
 }
 
 .editOverlay {

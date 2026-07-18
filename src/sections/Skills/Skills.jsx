@@ -6,10 +6,11 @@ import styles from './SkillsStyles.module.css';
 import { useReveal } from '../../common/useReveal';
 import Portal from '../../common/Portal';
 
+const ACCENT_CLASSES = ['accentRed', 'accentBlue', 'accentYellow'];
+
 function Skills() {
   const { isAdmin } = useAdmin();
   const [skillCategories, setSkillCategories] = useState({});
-  const [selectedCategory, setSelectedCategory] = useState('');
   const [showEditForm, setShowEditForm] = useState(false);
   const [editingCategory, setEditingCategory] = useState('');
   const [editingSkills, setEditingSkills] = useState('');
@@ -27,7 +28,6 @@ function Skills() {
         loadedSkills[d.id] = d.data().skills || [];
       });
       setSkillCategories(loadedSkills);
-      setSelectedCategory((prev) => (prev && loadedSkills[prev] ? prev : Object.keys(loadedSkills)[0] || ''));
     } catch (error) {
       console.error('Error loading skills:', error);
     }
@@ -77,7 +77,6 @@ function Skills() {
   };
 
   const categories = Object.keys(skillCategories);
-  const activeSkills = skillCategories[selectedCategory] || [];
 
   return (
     <section
@@ -99,32 +98,30 @@ function Skills() {
           </button>
         )}
 
-        <div className={styles.catRow}>
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`${styles.catButton} ${selectedCategory === cat ? styles.active : ''}`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        {isAdmin && selectedCategory && (
-          <div className={styles.adminControls}>
-            <button onClick={() => handleEditCategory(selectedCategory)}>✏️ Edit</button>
-            <button onClick={() => handleDeleteCategory(selectedCategory)}>🗑️ Delete</button>
-          </div>
-        )}
-
-        <div className={styles.chipGrid}>
-          {activeSkills.map((skill) => (
-            <div key={skill} className={styles.chip}>
-              <span className={styles.chipLabel}>{skill}</span>
-              <span className={styles.chipDot} />
-            </div>
-          ))}
+        <div className={styles.categoriesList}>
+          {categories.map((cat, i) => {
+            const accentClass = styles[ACCENT_CLASSES[i % ACCENT_CLASSES.length]];
+            return (
+              <div key={cat} className={styles.categoryGroup}>
+                <div className={styles.categoryHeader}>
+                  <h3 className={`${styles.categoryLabel} ${accentClass}`}>{cat}</h3>
+                  {isAdmin && (
+                    <div className={styles.categoryAdmin}>
+                      <button onClick={() => handleEditCategory(cat)} title="Edit category">✏️</button>
+                      <button onClick={() => handleDeleteCategory(cat)} title="Delete category">🗑️</button>
+                    </div>
+                  )}
+                </div>
+                <div className={styles.chipRow}>
+                  {skillCategories[cat].map((skill) => (
+                    <div key={skill} className={styles.chip}>
+                      <span className={styles.chipLabel}>{skill}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 

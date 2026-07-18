@@ -73,7 +73,9 @@
   border-radius: 50%;
   pointer-events: none;
   z-index: 9999;
+  opacity: 0;
   transform: translate(-50%, -50%);
+  transition: opacity 0.15s;
 }
 
 .cursorRing {
@@ -86,8 +88,9 @@
   border-radius: 50%;
   pointer-events: none;
   z-index: 9999;
+  opacity: 0;
   transform: translate(-50%, -50%);
-  transition: width 0.2s, height 0.2s;
+  transition: width 0.2s, height 0.2s, opacity 0.15s;
 }
 
 @media (max-width: 860px) {
