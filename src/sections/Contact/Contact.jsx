@@ -1,46 +1,68 @@
+import { useState, useEffect } from 'react';
+import { db } from '../../firebase/config';
+import { doc, getDoc } from 'firebase/firestore';
 import styles from './ContactStyles.module.css';
+import { useReveal } from '../../common/useReveal';
+import CV from '../../assets/cv.pdf';
+
+const DEFAULT_SOCIAL = {
+  github: 'https://github.com/yuanpngn',
+  linkedin: 'https://www.linkedin.com/in/yuan-pangan/',
+};
 
 function Contact() {
+  const [social, setSocial] = useState(DEFAULT_SOCIAL);
+  const [ref, revealed] = useReveal();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const docSnap = await getDoc(doc(db, 'portfolio', 'main'));
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setSocial((prev) => ({
+            github: data.social?.github || prev.github,
+            linkedin: data.social?.linkedin || prev.linkedin,
+          }));
+        }
+      } catch (error) {
+        console.error('Error loading social links:', error);
+      }
+    })();
+  }, []);
+
   return (
-    <section id="contact" className={styles.container}>
-      <h1 className="sectionTitle">Contact</h1>
-      <form action="https://formspree.io/f/mrbzbqqz" method="post">
-        <div className="formGroup">
-          <label htmlFor="name" hidden>
-            Name
-          </label>
-          <input
-            type="text"
-            name="name"
-            id="name"
-            placeholder="Name"
-            required
-          />
+    <section
+      id="contact"
+      aria-label="Contact"
+      ref={ref}
+      className={`${styles.container} ${revealed ? styles.revealed : ''}`}
+    >
+      <div className={styles.inner}>
+        <div className={styles.eyebrow}>CONTACT</div>
+        <div className={styles.headingWrap}>
+          <h2 className={styles.headline}>Let&apos;s build something worth remembering.</h2>
+          <div className={styles.underline} />
         </div>
-        <div className="formGroup">
-          <label htmlFor="email" hidden>
-            Email
-          </label>
-          <input
-            type="email"
-            name="email"
-            id="email"
-            placeholder="Email"
-            required
-          />
+        <p className={styles.sub}>
+          Open to software engineering, AI, and XR opportunities — internships, research
+          collaborations, or just a good conversation about building things.
+        </p>
+        <a href="mailto:yumiannpangan@gmail.com" data-cursor-hover="true" className={styles.email}>
+          yumiannpangan@gmail.com
+        </a>
+        <div className={styles.linkRow}>
+          <a href={social.linkedin} target="_blank" rel="noopener noreferrer" data-cursor-hover="true" className={styles.ctaSecondary}>
+            LinkedIn ↗
+          </a>
+          <a href={social.github} target="_blank" rel="noopener noreferrer" data-cursor-hover="true" className={styles.ctaSecondary}>
+            GitHub ↗
+          </a>
+          <a href={CV} download="Yuan-Pangan-Resume.pdf" data-cursor-hover="true" className={styles.ctaPrimary}>
+            Download Resume
+          </a>
         </div>
-        <div className="formGroup">
-          <label htmlFor="message" hidden>
-            Message
-          </label>
-          <textarea
-            name="message"
-            id="message"
-            placeholder="Message"
-            required></textarea>
-        </div>
-        <input className="hover btn" type="submit" value="Submit" />
-      </form>
+      </div>
     </section>
   );
 }

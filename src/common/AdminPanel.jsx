@@ -169,15 +169,56 @@ function AdminPanel() {
               </div>
 
               <div className={styles.formSection}>
-                <h4>Social Links</h4>
+                <h4>About Section</h4>
                 <label>
-                  Instagram:
-                  <input
-                    type="url"
-                    value={formData.social?.instagram || ''}
-                    onChange={(e) => handleChange('social', { ...formData.social, instagram: e.target.value })}
+                  Paragraph 1:
+                  <textarea
+                    value={formData.about?.paragraphs?.[0] || ''}
+                    onChange={(e) => {
+                      const paragraphs = [...(formData.about?.paragraphs || ['', '', ''])];
+                      paragraphs[0] = e.target.value;
+                      handleChange('about', { ...formData.about, paragraphs });
+                    }}
+                    rows={3}
                   />
                 </label>
+                <label>
+                  Paragraph 2:
+                  <textarea
+                    value={formData.about?.paragraphs?.[1] || ''}
+                    onChange={(e) => {
+                      const paragraphs = [...(formData.about?.paragraphs || ['', '', ''])];
+                      paragraphs[1] = e.target.value;
+                      handleChange('about', { ...formData.about, paragraphs });
+                    }}
+                    rows={3}
+                  />
+                </label>
+                <label>
+                  Paragraph 3:
+                  <textarea
+                    value={formData.about?.paragraphs?.[2] || ''}
+                    onChange={(e) => {
+                      const paragraphs = [...(formData.about?.paragraphs || ['', '', ''])];
+                      paragraphs[2] = e.target.value;
+                      handleChange('about', { ...formData.about, paragraphs });
+                    }}
+                    rows={3}
+                  />
+                </label>
+                <label>
+                  Location:
+                  <input
+                    type="text"
+                    value={formData.about?.location || ''}
+                    onChange={(e) => handleChange('about', { ...formData.about, location: e.target.value })}
+                    placeholder="Manila, Philippines"
+                  />
+                </label>
+              </div>
+
+              <div className={styles.formSection}>
+                <h4>Social Links</h4>
                 <label>
                   GitHub:
                   <input
@@ -197,7 +238,7 @@ function AdminPanel() {
               </div>
 
               <div className={styles.note}>
-                <strong>Note:</strong> Projects, Skills, and Experience sections can be edited individually through their respective admin controls when logged in.
+                <strong>Note:</strong> Projects, Skills, Experience, Research, and Achievements sections can be edited individually through their respective admin controls when logged in.
               </div>
             </div>
           )}

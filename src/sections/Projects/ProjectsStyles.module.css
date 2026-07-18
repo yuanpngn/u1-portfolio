@@ -1,46 +1,85 @@
 .container {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  padding: 60px 20px;
-  animation: fadeInUp 0.8s ease;
+  padding: 150px clamp(20px, 4vw, 48px);
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto 2rem;
-  width: 100%;
+.container.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.inner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.eyebrow {
+  font: 700 13px Kalam, cursive;
+  color: var(--dc-red);
+  letter-spacing: 0.05em;
+  margin-bottom: 14px;
+}
+
+.headingWrap {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 30px;
+}
+
+.h2 {
+  font: 400 clamp(28px, 3.4vw, 44px) / 1.15 'Archivo Black', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--dc-ink);
+  margin: 0;
+  transform: rotate(-0.6deg);
+  display: inline-block;
+}
+
+.underline {
+  position: absolute;
+  left: 4px;
+  bottom: -10px;
+  width: 55%;
+  height: 5px;
+  background: var(--dc-yellow);
+  transform: rotate(-1deg);
 }
 
 .addButton {
-  padding: 0.75rem 1.5rem;
-  background: rgba(139, 92, 246, 0.2);
-  border: 1px solid rgba(139, 92, 246, 0.4);
-  border-radius: 8px;
-  color: var(--text-color);
-  font-size: 1rem;
+  display: block;
+  margin: 0 0 20px;
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: 2px solid var(--dc-ink);
+  background: transparent;
+  color: var(--dc-ink);
+  font: 700 13.5px Kalam, cursive;
   cursor: pointer;
-  transition: all 0.3s;
 }
 
-.addButton:hover {
-  background: rgba(139, 92, 246, 0.3);
-  border-color: rgba(139, 92, 246, 0.6);
+.projectsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+  margin-top: 36px;
+  align-items: start;
 }
 
 .projectWrapper {
   position: relative;
 }
 
-.projectWrapper[data-pinned="true"]::before {
+.projectWrapper[data-pinned='true']::before {
   content: '⭐';
   position: absolute;
   top: 10px;
   right: 10px;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   z-index: 10;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
@@ -55,27 +94,17 @@
 
 .adminControls button {
   padding: 0.5rem 1rem;
-  background: rgba(139, 92, 246, 0.2);
-  border: 1px solid rgba(139, 92, 246, 0.4);
+  background: transparent;
+  border: 1.5px solid var(--dc-border);
   border-radius: 6px;
-  color: var(--text-color);
-  font-size: 0.9rem;
+  color: var(--dc-ink);
+  font-size: 0.85rem;
   cursor: pointer;
-  transition: all 0.3s;
-}
-
-.adminControls button:hover {
-  background: rgba(139, 92, 246, 0.3);
 }
 
 .pinnedButton {
-  background: rgba(255, 215, 0, 0.2) !important;
-  border-color: rgba(255, 215, 0, 0.5) !important;
-}
-
-.pinnedButton:hover {
-  background: rgba(255, 215, 0, 0.3) !important;
-  border-color: rgba(255, 215, 0, 0.6) !important;
+  background: rgba(242, 201, 76, 0.3) !important;
+  border-color: var(--dc-yellow) !important;
 }
 
 .editOverlay {
@@ -95,21 +124,21 @@
 }
 
 .editForm {
-  background: var(--background-color);
+  background: var(--dc-bg);
   padding: 2rem;
   border-radius: 12px;
   width: 90%;
   max-width: 600px;
   max-height: 85vh;
   overflow-y: auto;
-  border: 1px solid rgba(139, 92, 246, 0.4);
+  border: 2px solid var(--dc-ink);
   text-align: left;
   margin: auto;
 }
 
 .editForm h3 {
   margin-bottom: 1.5rem;
-  color: rgb(139, 92, 246);
+  color: var(--dc-red);
 }
 
 .editForm label {
@@ -123,10 +152,10 @@
   width: 100%;
   padding: 0.75rem;
   margin-top: 0.25rem;
-  background: rgba(139, 92, 246, 0.1);
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  background: var(--dc-card-bg);
+  border: 1.5px solid var(--dc-border);
   border-radius: 6px;
-  color: var(--text-color);
+  color: var(--dc-ink);
   font-family: inherit;
   font-size: 1rem;
 }
@@ -134,7 +163,7 @@
 .editForm input:focus,
 .editForm textarea:focus {
   outline: none;
-  border-color: rgba(139, 92, 246, 0.6);
+  border-color: var(--dc-red);
 }
 
 .formButtons {
@@ -147,64 +176,14 @@
   flex: 1;
   padding: 0.75rem;
   border-radius: 8px;
-  font-size: 1rem;
+  font: 700 14px Kalam, cursive;
   cursor: pointer;
-  transition: all 0.3s;
+  border: 2px solid var(--dc-ink);
+  background: transparent;
+  color: var(--dc-ink);
 }
 
-.formButtons button[type="submit"] {
-  background: rgba(139, 92, 246, 0.3);
-  border: 1px solid rgba(139, 92, 246, 0.5);
-  color: var(--text-color);
-}
-
-.formButtons button[type="submit"]:hover {
-  background: rgba(139, 92, 246, 0.4);
-}
-
-.formButtons button[type="button"] {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: var(--text-color);
-}
-
-.formButtons button[type="button"]:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-.projectsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 28px;
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (width >= 800px) {
-  .container {
-    padding: 80px 40px;
-  }
-
-  .projectsGrid {
-    gap: 32px;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  }
-}
-
-@media (width >= 1400px) {
-  .projectsGrid {
-    gap: 36px;
-  }
+.formButtons button[type='submit'] {
+  background: var(--dc-ink);
+  color: var(--dc-cream);
 }

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styles from './EntryCardStyles.module.css';
+import Portal from '../../common/Portal';
 
 function EntryCard({ entry, category, isAdmin, onEdit, onDelete, onTogglePin }) {
   const [imageModalOpen, setImageModalOpen] = useState(false);
@@ -118,6 +119,7 @@ function EntryCard({ entry, category, isAdmin, onEdit, onDelete, onTogglePin }) 
       </div>
 
       {showFullEntry && (
+        <Portal>
         <div className={styles.entryModal} onClick={() => setShowFullEntry(false)}>
           <div className={styles.entryModalContent} onClick={(e) => e.stopPropagation()}>
             <button className={styles.closeModal} onClick={() => setShowFullEntry(false)}>✕</button>
@@ -167,15 +169,18 @@ function EntryCard({ entry, category, isAdmin, onEdit, onDelete, onTogglePin }) 
             )}
           </div>
         </div>
+        </Portal>
       )}
 
       {imageModalOpen && (
+        <Portal>
         <div className={styles.imageModal} onClick={closeImageModal}>
           <div className={styles.imageModalContent}>
             <button className={styles.closeModal} onClick={closeImageModal}>✕</button>
             <img src={selectedImage} alt="Full size" />
           </div>
         </div>
+        </Portal>
       )}
     </>
   );

@@ -2,28 +2,18 @@ import { useState, useEffect } from 'react';
 import { db } from '../../firebase/config';
 import { doc, getDoc } from 'firebase/firestore';
 import styles from './HeroStyles.module.css';
-import heroImg from '../../assets/yuan.png';
-import twitterLight from '../../assets/twitter-light.svg';
-import twitterDark from '../../assets/twitter-dark.svg';
-import githubLight from '../../assets/github-light.svg';
-import githubDark from '../../assets/github-dark.svg';
-import linkedinLight from '../../assets/linkedin-light.svg';
-import linkedinDark from '../../assets/linkedin-dark.svg';
 import CV from '../../assets/cv.pdf';
-import { useTheme } from '../../common/ThemeContext';
+
+const HERO_CHIPS = ['Mixed Reality + Unity', 'VBA Automation', 'Node.js + MongoDB', 'Java + Spring Boot'];
 
 function Hero() {
-  const { theme } = useTheme();
   const [heroData, setHeroData] = useState({
     name: 'Yuan Pangan',
-    title: 'Computer Science Student & Full-Stack Developer',
-    description: 'Passionate software engineer specializing in full-stack development, machine learning, and cloud technologies. Currently pursuing Computer Science at De La Salle University - Manila, building innovative solutions from VR experiences to telemedicine platforms.',
-    social: {
-      instagram: 'https://www.instagram.com/yuanpngn?igsh=bXBxbXhqbTJ2Mms5&utm_source=qr',
-      github: 'https://github.com/yuanpngn',
-      linkedin: 'https://www.linkedin.com/in/yuan-pangan-043245235'
-    }
+    title: 'Software engineer building across mixed reality, automation, and full-stack systems.',
+    description:
+      'From automating BAU workflows at HSBC to building a mixed-reality drone performance system for my thesis — I like shipping things that hold up under real use.',
   });
+  const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
 
   useEffect(() => {
     loadHeroData();
@@ -33,65 +23,65 @@ function Hero() {
     try {
       const docRef = doc(db, 'portfolio', 'main');
       const docSnap = await getDoc(docRef);
-      
+
       if (docSnap.exists()) {
         const data = docSnap.data();
-        setHeroData({
-          name: data.hero?.name || heroData.name,
-          title: data.hero?.title || heroData.title,
-          description: data.hero?.description || heroData.description,
-          social: {
-            instagram: data.social?.instagram || heroData.social.instagram,
-            github: data.social?.github || heroData.social.github,
-            linkedin: data.social?.linkedin || heroData.social.linkedin
-          }
-        });
+        setHeroData((prev) => ({
+          name: data.hero?.name || prev.name,
+          title: data.hero?.title || prev.title,
+          description: data.hero?.description || prev.description,
+        }));
       }
     } catch (error) {
       console.error('Error loading hero data:', error);
     }
   };
 
-  const twitterIcon = theme === 'light' ? twitterLight : twitterDark;
-  const githubIcon = theme === 'light' ? githubLight : githubDark;
-  const linkedinIcon = theme === 'light' ? linkedinLight : linkedinDark;
+  const handleTilt = (e) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width - 0.5;
+    const py = (e.clientY - r.top) / r.height - 0.5;
+    setTilt({ rx: py * -10, ry: px * 14 });
+  };
+
+  const resetTilt = () => setTilt({ rx: 0, ry: 0 });
 
   return (
-    <section id="hero" className={styles.container}>
-      <div className={styles.colorModeContainer}>
-        <img
-          src={heroImg}
-          className={styles.hero}
-          alt="Profile picture of Yuan Pangan"
-        />
-      </div>
-      <div className={styles.content}>
-        <div className={styles.info}>
-          <h1>
-            {heroData.name.split(' ')[0]}
-            <br />
-            {heroData.name.split(' ')[1] || ''}
-          </h1>
-          <h2>{heroData.title}</h2>
-          <span>
-            <a href={heroData.social.instagram} target="_blank" rel="noopener noreferrer">
-              <img src={twitterIcon} alt="Instagram" />
+    <section id="hero" aria-label="Introduction" className={styles.container}>
+      <div className={styles.grid}>
+        <div>
+          <div className={styles.eyebrow}>
+            <span className={styles.pulseDot} />
+            CS · Software Technology · DLSU
+          </div>
+          <h1 className={styles.name}>{heroData.name}</h1>
+          <p className={styles.tagline}>{heroData.title}</p>
+          <p className={styles.sub}>{heroData.description}</p>
+          <div className={styles.ctaRow}>
+            <a href="#projects" data-cursor-hover="true" className={styles.ctaPrimary}>
+              View Projects
             </a>
-            <a href={heroData.social.github} target="_blank" rel="noopener noreferrer">
-              <img src={githubIcon} alt="GitHub" />
+            <a href={CV} download="Yuan-Pangan-Resume.pdf" data-cursor-hover="true" className={styles.ctaSecondary}>
+              Download Resume
             </a>
-            <a href={heroData.social.linkedin} target="_blank" rel="noopener noreferrer">
-              <img src={linkedinIcon} alt="LinkedIn" />
+            <a href="#contact" data-cursor-hover="true" className={styles.ctaGhost}>
+              Contact Me →
             </a>
-          </span>
+          </div>
+          <div className={styles.scrollCue}>↓ scroll</div>
         </div>
-        <div className={styles.descriptionSection}>
-          <p className={styles.description}>
-            {heroData.description}
-          </p>
-          <a href={CV} download>
-            <button className="hover">Download Resume</button>
-          </a>
+        <div className={styles.cardWrap} onMouseMove={handleTilt} onMouseLeave={resetTilt}>
+          <div
+            className={styles.tiltCard}
+            style={{ transform: `perspective(1000px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)` }}
+          >
+            <div className={styles.heroCrown}>♛</div>
+            {HERO_CHIPS.map((chip, i) => (
+              <div key={chip} className={`${styles.chip} ${styles[`chip${i}`]}`}>
+                {chip}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

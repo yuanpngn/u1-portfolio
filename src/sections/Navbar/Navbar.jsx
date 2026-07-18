@@ -1,23 +1,30 @@
 import { useState, useEffect } from 'react';
 import styles from './NavbarStyles.module.css';
 import { useTheme } from '../../common/ThemeContext';
-import sun from '../../assets/sun.svg';
-import moon from '../../assets/moon.svg';
+import { useIsMobile } from '../../common/useIsMobile';
+import CV from '../../assets/cv.pdf';
+
+const NAV_ITEMS = [
+  { id: 'about', label: 'About' },
+  { id: 'skills', label: 'Skills' },
+  { id: 'projects', label: 'Projects' },
+  { id: 'experience', label: 'Experience' },
+  { id: 'research', label: 'Research' },
+  { id: 'commonplace', label: 'Commonplace' },
+  { id: 'contact', label: 'Contact' },
+];
 
 function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
   const { theme, toggleTheme } = useTheme();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-      
-      // Detect active section
-      const sections = ['hero', 'projects', 'skills', 'experience', 'commonplace', 'contact'];
+      const sections = ['hero', ...NAV_ITEMS.map((n) => n.id)];
       const scrollPosition = window.scrollY + window.innerHeight / 2;
-      
+
       for (const sectionId of sections) {
         const element = document.getElementById(sectionId);
         if (element) {
@@ -29,87 +36,81 @@ function Navbar() {
         }
       }
     };
-    
+
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const themeIcon = theme === 'light' ? sun : moon;
+  useEffect(() => {
+    if (!isMobile) setMenuOpen(false);
+  }, [isMobile]);
 
-  const scrollToSection = (sectionId) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setMenuOpen(false);
-    }
-  };
+  const themeIcon = theme === 'light' ? '☾' : '☀';
+
+  const closeMobile = () => setMenuOpen(false);
 
   return (
-    <nav className={`${styles.navbar} ${scrolled ? styles.scrolled : ''}`}>
+    <header className={styles.header}>
       <div className={styles.container}>
-        <div className={styles.logo}>
-          <span>Yuan</span>
-          <span className={styles.dot}>.</span>
-        </div>
+        <a href="#main" data-cursor-hover="true" className={styles.logo}>
+          Yuan<span className={styles.crown}>♛</span>
+        </a>
 
-        <button 
-          className={styles.menuToggle}
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Toggle menu"
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
+        {!isMobile && (
+          <nav aria-label="Main" className={styles.navLinks}>
+            {NAV_ITEMS.map((item) => (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                data-cursor-hover="true"
+                className={`${styles.navLink} ${activeSection === item.id ? styles.active : ''}`}
+              >
+                {item.label}
+              </a>
+            ))}
+            <button onClick={toggleTheme} aria-label="Toggle dark mode" className={styles.themeBtn}>
+              {themeIcon}
+            </button>
+            <a href={CV} download="Yuan-Pangan-Resume.pdf" data-cursor-hover="true" className={styles.resumeBtn}>
+              Resume
+            </a>
+          </nav>
+        )}
 
-        <div className={`${styles.navLinks} ${menuOpen ? styles.open : ''}`}>
-          <button 
-            onClick={() => scrollToSection('hero')} 
-            className={`${styles.navLink} ${activeSection === 'hero' ? styles.active : ''}`}
-          >
-            Home
-          </button>
-          <button 
-            onClick={() => scrollToSection('projects')} 
-            className={`${styles.navLink} ${activeSection === 'projects' ? styles.active : ''}`}
-          >
-            Projects
-          </button>
-          <button 
-            onClick={() => scrollToSection('skills')} 
-            className={`${styles.navLink} ${activeSection === 'skills' ? styles.active : ''}`}
-          >
-            Skills
-          </button>
-          <button 
-            onClick={() => scrollToSection('experience')} 
-            className={`${styles.navLink} ${activeSection === 'experience' ? styles.active : ''}`}
-          >
-            Experience
-          </button>
-          <button 
-            onClick={() => scrollToSection('commonplace')} 
-            className={`${styles.navLink} ${activeSection === 'commonplace' ? styles.active : ''}`}
-          >
-            Commonplace
-          </button>
-          <button 
-            onClick={() => scrollToSection('contact')} 
-            className={`${styles.navLink} ${activeSection === 'contact' ? styles.active : ''}`}
-          >
-            Contact
-          </button>
-          
-          <button 
-            onClick={toggleTheme}
-            className={styles.themeToggle}
-            aria-label="Toggle theme"
-          >
-            <img src={themeIcon} alt="Theme toggle" />
-          </button>
-        </div>
+        {isMobile && (
+          <div className={styles.mobileControls}>
+            <button onClick={toggleTheme} aria-label="Toggle dark mode" className={styles.themeBtn}>
+              {themeIcon}
+            </button>
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label="Toggle menu"
+              className={styles.hamburger}
+            >
+              ☰
+            </button>
+          </div>
+        )}
       </div>
-    </nav>
+
+      {isMobile && menuOpen && (
+        <nav aria-label="Mobile" className={styles.mobileNav}>
+          {NAV_ITEMS.map((item) => (
+            <a
+              key={item.id}
+              href={`#${item.id}`}
+              onClick={closeMobile}
+              className={styles.mobileNavLink}
+            >
+              {item.label}
+            </a>
+          ))}
+          <a href={CV} download="Yuan-Pangan-Resume.pdf" className={styles.mobileResumeBtn}>
+            Download Resume
+          </a>
+        </nav>
+      )}
+    </header>
   );
 }
 

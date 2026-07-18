@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import styles from './ScrollProgress.module.css';
 
 function ScrollProgress() {
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -8,10 +9,10 @@ function ScrollProgress() {
       const windowHeight = window.innerHeight;
       const documentHeight = document.documentElement.scrollHeight;
       const scrollTop = window.scrollY;
-      
+
       const totalScroll = documentHeight - windowHeight;
-      const progress = (scrollTop / totalScroll) * 100;
-      
+      const progress = totalScroll > 0 ? (scrollTop / totalScroll) * 100 : 0;
+
       setScrollProgress(Math.min(progress, 100));
     };
 
@@ -20,10 +21,9 @@ function ScrollProgress() {
   }, []);
 
   return (
-    <div 
-      className="scrollProgress" 
-      style={{ width: `${scrollProgress}%` }}
-    />
+    <div className={styles.wrap}>
+      <div className={styles.fill} style={{ width: `${scrollProgress}%` }} />
+    </div>
   );
 }
 

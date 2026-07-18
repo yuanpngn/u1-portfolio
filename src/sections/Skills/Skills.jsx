@@ -3,20 +3,17 @@ import { db } from '../../firebase/config';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { useAdmin } from '../../common/AdminContext';
 import styles from './SkillsStyles.module.css';
-import checkMarkIconDark from '../../assets/checkmark-dark.svg';
-import checkMarkIconLight from '../../assets/checkmark-light.svg';
-import SkillList from '../../common/SkillList';
-import { useTheme } from '../../common/ThemeContext';
+import { useReveal } from '../../common/useReveal';
+import Portal from '../../common/Portal';
 
 function Skills() {
-  const { theme } = useTheme();
   const { isAdmin } = useAdmin();
-  const checkMarkIcon = theme === 'light' ? checkMarkIconLight : checkMarkIconDark;
-
   const [skillCategories, setSkillCategories] = useState({});
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [showEditForm, setShowEditForm] = useState(false);
   const [editingCategory, setEditingCategory] = useState('');
   const [editingSkills, setEditingSkills] = useState('');
+  const [ref, revealed] = useReveal();
 
   useEffect(() => {
     loadSkills();
@@ -26,10 +23,11 @@ function Skills() {
     try {
       const querySnapshot = await getDocs(collection(db, 'skills'));
       const loadedSkills = {};
-      querySnapshot.docs.forEach(doc => {
-        loadedSkills[doc.id] = doc.data().skills || [];
+      querySnapshot.docs.forEach((d) => {
+        loadedSkills[d.id] = d.data().skills || [];
       });
       setSkillCategories(loadedSkills);
+      setSelectedCategory((prev) => (prev && loadedSkills[prev] ? prev : Object.keys(loadedSkills)[0] || ''));
     } catch (error) {
       console.error('Error loading skills:', error);
     }
@@ -49,7 +47,7 @@ function Skills() {
 
   const handleSaveCategory = async (e) => {
     e.preventDefault();
-    const skills = editingSkills.split('\n').filter(s => s.trim());
+    const skills = editingSkills.split('\n').filter((s) => s.trim());
     const categoryName = editingCategory || e.target.categoryName.value;
 
     try {
@@ -57,7 +55,6 @@ function Skills() {
       await loadSkills();
       setShowEditForm(false);
     } catch (error) {
-      // If doc doesn't exist, create it
       try {
         await addDoc(collection(db, 'skills'), { skills });
         await loadSkills();
@@ -79,38 +76,60 @@ function Skills() {
     }
   };
 
+  const categories = Object.keys(skillCategories);
+  const activeSkills = skillCategories[selectedCategory] || [];
+
   return (
-    <section id="skills" className={styles.container}>
-      <div className={styles.header}>
-        <h1 className="sectionTitle">Technical Skills</h1>
+    <section
+      id="skills"
+      aria-label="Skills"
+      ref={ref}
+      className={`${styles.container} ${revealed ? styles.revealed : ''}`}
+    >
+      <div className={styles.inner}>
+        <div className={styles.eyebrow}>SKILLS</div>
+        <div className={styles.headingWrap}>
+          <h2 className={styles.h2}>What I work with.</h2>
+          <div className={styles.underline} />
+        </div>
+
         {isAdmin && (
           <button className={styles.addButton} onClick={handleAddCategory}>
             + Add Category
           </button>
         )}
-      </div>
-      
-      {Object.entries(skillCategories).map(([category, skills], index) => (
-        <div key={category}>
-          <div className={styles.categoryHeader}>
-            <h3 className={styles.categoryTitle}>{category}</h3>
-            {isAdmin && (
-              <div className={styles.adminControls}>
-                <button onClick={() => handleEditCategory(category)}>✏️</button>
-                <button onClick={() => handleDeleteCategory(category)}>🗑️</button>
-              </div>
-            )}
-          </div>
-          <div className={styles.skillList}>
-            {skills.map((skill) => (
-              <SkillList key={skill} src={checkMarkIcon} skill={skill} />
-            ))}
-          </div>
-          {index < Object.keys(skillCategories).length - 1 && <hr />}
+
+        <div className={styles.catRow}>
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`${styles.catButton} ${selectedCategory === cat ? styles.active : ''}`}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
-      ))}
+
+        {isAdmin && selectedCategory && (
+          <div className={styles.adminControls}>
+            <button onClick={() => handleEditCategory(selectedCategory)}>✏️ Edit</button>
+            <button onClick={() => handleDeleteCategory(selectedCategory)}>🗑️ Delete</button>
+          </div>
+        )}
+
+        <div className={styles.chipGrid}>
+          {activeSkills.map((skill) => (
+            <div key={skill} className={styles.chip}>
+              <span className={styles.chipLabel}>{skill}</span>
+              <span className={styles.chipDot} />
+            </div>
+          ))}
+        </div>
+      </div>
 
       {showEditForm && (
+        <Portal>
         <div className={styles.editOverlay} onClick={() => setShowEditForm(false)}>
           <div className={styles.editForm} onClick={(e) => e.stopPropagation()}>
             <h3>{editingCategory ? 'Edit Category' : 'Add New Category'}</h3>
@@ -137,6 +156,7 @@ function Skills() {
             </form>
           </div>
         </div>
+        </Portal>
       )}
     </section>
   );

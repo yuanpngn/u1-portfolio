@@ -5,6 +5,8 @@ import { useAdmin } from '../../common/AdminContext';
 import styles from './ProjectsStyles.module.css';
 import ProjectCard from '../../common/ProjectCard';
 import ProjectModal from '../../common/ProjectModal';
+import { useReveal } from '../../common/useReveal';
+import Portal from '../../common/Portal';
 
 function Projects() {
   const { isAdmin } = useAdmin();
@@ -12,6 +14,7 @@ function Projects() {
   const [projects, setProjects] = useState([]);
   const [showEditForm, setShowEditForm] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
+  const [ref, revealed] = useReveal();
 
   useEffect(() => {
     loadProjects();
@@ -20,18 +23,17 @@ function Projects() {
   const loadProjects = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'projects'));
-      const loadedProjects = querySnapshot.docs.map(doc => ({
-        ...doc.data(),
-        firestoreId: doc.id
+      const loadedProjects = querySnapshot.docs.map((d) => ({
+        ...d.data(),
+        firestoreId: d.id,
       }));
-      
-      // Sort projects: pinned first, then by order
+
       loadedProjects.sort((a, b) => {
         if (a.isPinned && !b.isPinned) return -1;
         if (!a.isPinned && b.isPinned) return 1;
         return 0;
       });
-      
+
       setProjects(loadedProjects);
     } catch (error) {
       console.error('Error loading projects:', error);
@@ -42,12 +44,22 @@ function Projects() {
   const togglePin = async (project) => {
     try {
       await updateDoc(doc(db, 'projects', project.firestoreId), {
-        isPinned: !project.isPinned
+        isPinned: !project.isPinned,
       });
       await loadProjects();
     } catch (error) {
       console.error('Error toggling pin:', error);
       alert('Failed to toggle pin');
+    }
+  };
+
+  const handlePhotoUploaded = async (project, url) => {
+    try {
+      await updateDoc(doc(db, 'projects', project.firestoreId), { imageUrl: url });
+      await loadProjects();
+    } catch (error) {
+      console.error('Error saving project photo:', error);
+      alert('Failed to save photo. Please try again.');
     }
   };
 
@@ -62,7 +74,7 @@ function Projects() {
       category: '',
       status: '',
       conferencePaper: '',
-      isPinned: false
+      isPinned: false,
     });
     setShowEditForm(true);
   };
@@ -75,10 +87,8 @@ function Projects() {
   const handleSaveProject = async (projectData) => {
     try {
       if (projectData.firestoreId) {
-        // Update existing
         await updateDoc(doc(db, 'projects', projectData.firestoreId), projectData);
       } else {
-        // Add new
         await addDoc(collection(db, 'projects'), projectData);
       }
       await loadProjects();
@@ -103,52 +113,62 @@ function Projects() {
   };
 
   return (
-    <section id="projects" className={styles.container}>
-      <div className={styles.header}>
-        <h1 className="sectionTitle">Projects</h1>
+    <section
+      id="projects"
+      aria-label="Projects"
+      ref={ref}
+      className={`${styles.container} ${revealed ? styles.revealed : ''}`}
+    >
+      <div className={styles.inner}>
+        <div className={styles.eyebrow}>PROJECTS ♛</div>
+        <div className={styles.headingWrap}>
+          <h2 className={styles.h2}>Selected work.</h2>
+          <div className={styles.underline} />
+        </div>
+
         {isAdmin && (
           <button className={styles.addButton} onClick={handleAddProject}>
             + Add Project
           </button>
         )}
+
+        <div className={styles.projectsGrid}>
+          {projects.map((project, i) => (
+            <div
+              key={project.id || project.firestoreId}
+              className={styles.projectWrapper}
+              data-pinned={project.isPinned || false}
+            >
+              <ProjectCard
+                project={project}
+                index={i}
+                onClick={() => setSelectedProject(project)}
+                onPhotoUploaded={(url) => handlePhotoUploaded(project, url)}
+              />
+              {isAdmin && (
+                <div className={styles.adminControls}>
+                  <button onClick={() => handleEditProject(project)}>✏️ Edit</button>
+                  {project.firestoreId && (
+                    <>
+                      <button
+                        onClick={() => togglePin(project)}
+                        className={project.isPinned ? styles.pinnedButton : ''}
+                        title={project.isPinned ? 'Unpin project' : 'Pin project'}
+                      >
+                        {project.isPinned ? '⭐ Pinned' : '☆ Pin'}
+                      </button>
+                      <button onClick={() => handleDeleteProject(project.firestoreId)}>🗑️ Delete</button>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
-      <div className={styles.projectsGrid}>
-        {projects.map((project) => (
-          <div 
-            key={project.id || project.firestoreId} 
-            className={styles.projectWrapper}
-            data-pinned={project.isPinned || false}
-          >
-            <ProjectCard
-              project={project}
-              onClick={() => setSelectedProject(project)}
-            />
-            {isAdmin && (
-              <div className={styles.adminControls}>
-                <button onClick={() => handleEditProject(project)}>✏️ Edit</button>
-                {project.firestoreId && (
-                  <>
-                    <button 
-                      onClick={() => togglePin(project)}
-                      className={project.isPinned ? styles.pinnedButton : ''}
-                      title={project.isPinned ? 'Unpin project' : 'Pin project'}
-                    >
-                      {project.isPinned ? '⭐ Pinned' : '☆ Pin'}
-                    </button>
-                    <button onClick={() => handleDeleteProject(project.firestoreId)}>🗑️ Delete</button>
-                  </>
-                )}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-      
+
       {selectedProject && (
-        <ProjectModal
-          project={selectedProject}
-          onClose={() => setSelectedProject(null)}
-        />
+        <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
       )}
 
       {showEditForm && (
@@ -169,16 +189,16 @@ function ProjectEditForm({ project, onSave, onCancel }) {
   const [formData, setFormData] = useState({
     ...project,
     technologies: project.technologies || [],
-    highlights: project.highlights || []
+    highlights: project.highlights || [],
   });
 
   const handleChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleArrayChange = (field, value) => {
-    const array = value.split('\n').filter(item => item.trim());
-    setFormData(prev => ({ ...prev, [field]: array }));
+    const array = value.split('\n').filter((item) => item.trim());
+    setFormData((prev) => ({ ...prev, [field]: array }));
   };
 
   const handleSubmit = (e) => {
@@ -187,6 +207,7 @@ function ProjectEditForm({ project, onSave, onCancel }) {
   };
 
   return (
+    <Portal>
     <div className={styles.editOverlay} onClick={onCancel}>
       <div className={styles.editForm} onClick={(e) => e.stopPropagation()}>
         <h3>{project.firestoreId ? 'Edit Project' : 'Add New Project'}</h3>
@@ -266,6 +287,15 @@ function ProjectEditForm({ project, onSave, onCancel }) {
             />
           </label>
 
+          <label>
+            Attachment URL (Conference Paper):
+            <input
+              type="url"
+              value={formData.conferencePaper || ''}
+              onChange={(e) => handleChange('conferencePaper', e.target.value)}
+            />
+          </label>
+
           <div className={styles.formButtons}>
             <button type="submit">Save Project</button>
             <button type="button" onClick={onCancel}>Cancel</button>
@@ -273,6 +303,7 @@ function ProjectEditForm({ project, onSave, onCancel }) {
         </form>
       </div>
     </div>
+    </Portal>
   );
 }
 

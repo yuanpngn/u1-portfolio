@@ -1,0 +1,15 @@
+.wrap {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  z-index: 9998;
+  background: transparent;
+}
+
+.fill {
+  height: 100%;
+  background: var(--dc-red);
+  transition: width 0.1s linear;
+}

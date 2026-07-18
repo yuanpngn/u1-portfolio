@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styles from './EntryFormStyles.module.css';
+import Portal from '../../common/Portal';
 
 function EntryForm({ entry, categories, onSubmit, onCancel }) {
   const [formData, setFormData] = useState({
@@ -100,6 +101,7 @@ function EntryForm({ entry, categories, onSubmit, onCancel }) {
   };
 
   return (
+    <Portal>
     <div className={styles.formOverlay} onClick={onCancel}>
       <div className={styles.formContainer} onClick={(e) => e.stopPropagation()}>
         <div className={styles.formHeader}>
@@ -228,6 +230,7 @@ function EntryForm({ entry, categories, onSubmit, onCancel }) {
         </form>
       </div>
     </div>
+    </Portal>
   );
 }
 

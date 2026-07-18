@@ -1,0 +1,136 @@
+.container {
+  padding: 150px clamp(20px, 4vw, 48px);
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.container.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.grid {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.6fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: start;
+}
+
+.eyebrow {
+  font: 700 13px Kalam, cursive;
+  color: var(--dc-red);
+  letter-spacing: 0.05em;
+  margin-bottom: 14px;
+}
+
+.headingWrap {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 30px;
+}
+
+.h2 {
+  font: 400 clamp(28px, 3.4vw, 44px) / 1.15 'Archivo Black', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--dc-ink);
+  margin: 0;
+  transform: rotate(-0.6deg);
+  display: inline-block;
+}
+
+.underline {
+  position: absolute;
+  left: 2px;
+  bottom: -10px;
+  width: 60%;
+  height: 5px;
+  background: var(--dc-red);
+  transform: rotate(-1.5deg);
+}
+
+.points {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+.point {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 18px;
+}
+
+.number {
+  font: 700 15px Kalam, cursive;
+  color: var(--dc-blue);
+}
+
+.body {
+  font: 400 17px / 1.7 Manrope, sans-serif;
+  color: var(--dc-ink-soft);
+  margin: 0;
+}
+
+.photoWrap {
+  position: relative;
+}
+
+.tapeStrip {
+  position: absolute;
+  top: -16px;
+  left: 38%;
+  width: 90px;
+  height: 32px;
+  background: rgba(242, 201, 76, 0.75);
+  border: 1px solid var(--dc-ink);
+  transform: rotate(-4deg);
+  z-index: 2;
+}
+
+[data-theme='dark'] .tapeStrip {
+  background: rgba(242, 201, 76, 0.55);
+}
+
+.photoFrame {
+  border: 3px solid var(--dc-ink);
+  border-radius: 10px;
+  overflow: hidden;
+  transform: rotate(-1deg);
+}
+
+.photo {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  display: block;
+}
+
+.pinNote {
+  position: absolute;
+  bottom: -18px;
+  right: -14px;
+  background: var(--dc-yellow);
+  border: 2px solid var(--dc-ink);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font: 700 13px Kalam, cursive;
+  color: var(--dc-ink);
+  transform: rotate(3deg);
+}
+
+@media (max-width: 700px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .photoWrap {
+    margin-top: 40px;
+    max-width: 320px;
+  }
+}
