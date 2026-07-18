@@ -162,6 +162,15 @@
   animation-duration: 8s;
 }
 
+.chip4 {
+  left: 6%;
+  top: 68%;
+  --r: -2deg;
+  box-shadow: 3px 3px 0 var(--dc-blue);
+  animation-delay: 1.2s;
+  animation-duration: 9s;
+}
+
 @media (max-width: 700px) {
   .grid {
     grid-template-columns: 1fr;

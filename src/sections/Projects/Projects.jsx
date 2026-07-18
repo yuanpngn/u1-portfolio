@@ -142,6 +142,9 @@ function Projects() {
               className={styles.projectWrapper}
               data-pinned={project.isPinned || false}
             >
+              {project.isPinned && (
+                <Crown size={30} color="var(--dc-yellow)" className={styles.pinnedCrown} />
+              )}
               <ProjectCard
                 project={project}
                 index={i}
@@ -158,7 +161,7 @@ function Projects() {
                         className={project.isPinned ? styles.pinnedButton : ''}
                         title={project.isPinned ? 'Unpin project' : 'Pin project'}
                       >
-                        {project.isPinned ? '⭐ Pinned' : '☆ Pin'}
+                        <Crown size={13} color="currentColor" /> {project.isPinned ? 'Pinned' : 'Pin'}
                       </button>
                       <button onClick={() => handleDeleteProject(project.firestoreId)}>🗑️ Delete</button>
                     </>

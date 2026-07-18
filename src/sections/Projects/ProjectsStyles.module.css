@@ -74,14 +74,13 @@
   position: relative;
 }
 
-.projectWrapper[data-pinned='true']::before {
-  content: '⭐';
+.pinnedCrown {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 1.3rem;
+  top: 6px;
+  right: 8px;
   z-index: 10;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  transform: rotate(8deg);
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
 }
 
 .adminControls {
@@ -93,6 +92,9 @@
 }
 
 .adminControls button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   padding: 0.5rem 1rem;
   background: transparent;
   border: 1.5px solid var(--dc-border);

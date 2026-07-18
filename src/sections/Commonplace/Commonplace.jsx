@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, query, orderBy, Timestamp } from 'firebase/firestore';
 import { db } from '../../firebase/config';
 import { useAdmin } from '../../common/AdminContext';
+import Crown from '../../common/Crown';
+import { useReveal } from '../../common/useReveal';
 import styles from './CommonplaceStyles.module.css';
 import EntryForm from './EntryForm';
 import EntryCard from './EntryCard';
@@ -13,6 +15,7 @@ function Commonplace() {
   const [showEntryForm, setShowEntryForm] = useState(false);
   const [editingEntry, setEditingEntry] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [ref, revealed] = useReveal();
 
   const categories = [
     { id: 'all', name: 'All Entries', icon: '📚' },
@@ -36,14 +39,13 @@ function Commonplace() {
         createdAt: doc.data().createdAt?.toDate?.()?.toISOString() || new Date().toISOString(),
         updatedAt: doc.data().updatedAt?.toDate?.()?.toISOString() || new Date().toISOString(),
       }));
-      
-      // Sort entries: pinned first, then by date
+
       loadedEntries.sort((a, b) => {
         if (a.isPinned && !b.isPinned) return -1;
         if (!a.isPinned && b.isPinned) return 1;
         return new Date(b.createdAt) - new Date(a.createdAt);
       });
-      
+
       setEntries(loadedEntries);
     } catch (error) {
       console.error('Error loading entries:', error);
@@ -116,11 +118,16 @@ function Commonplace() {
     : entries.filter(entry => entry.category === selectedCategory);
 
   return (
-    <section id="commonplace" className={`${styles.container} ${isExpanded ? styles.expanded : styles.collapsed}`}>
-      <button 
+    <section
+      id="commonplace"
+      ref={ref}
+      className={`${styles.container} ${isExpanded ? styles.expanded : styles.collapsed} ${revealed ? styles.revealed : ''}`}
+    >
+      <button
         className={styles.toggleButton}
         onClick={() => setIsExpanded(!isExpanded)}
-        aria-label={isExpanded ? "Hide Commonplace" : "Show Commonplace"}
+        aria-label={isExpanded ? 'Hide Commonplace' : 'Show Commonplace'}
+        data-cursor-hover="true"
       >
         <span className={styles.toggleIcon}>{isExpanded ? '▼' : '▶'}</span>
         <span className={styles.toggleText}>
@@ -132,73 +139,78 @@ function Commonplace() {
       {isExpanded && (
         <div className={styles.content}>
           <div className={styles.header}>
-            <h1 className="sectionTitle">Commonplace</h1>
+            <div className={styles.eyebrow}>
+              COMMONPLACE <Crown size={14} color="var(--dc-red)" />
+            </div>
+            <div className={styles.headingWrap}>
+              <h2 className={styles.h2}>Notes worth keeping.</h2>
+              <div className={styles.underline} />
+            </div>
             <p className={styles.subtitle}>
-          A collection of interesting quotes, notes, and thoughts
-        </p>
-      </div>
-
-      {isAdmin && (
-        <div className={styles.adminControls}>
-          <button 
-            className={styles.addButton}
-            onClick={() => {
-              setEditingEntry(null);
-              setShowEntryForm(true);
-            }}
-          >
-            + Add New Entry
-          </button>
-        </div>
-      )}
-
-      <div className={styles.categoryFilter}>
-        {categories.map(category => (
-          <button
-            key={category.id}
-            className={`${styles.categoryButton} ${
-              selectedCategory === category.id ? styles.active : ''
-            }`}
-            onClick={() => setSelectedCategory(category.id)}
-          >
-            <span className={styles.categoryIcon}>{category.icon}</span>
-            {category.name}
-          </button>
-        ))}
-      </div>
-
-      {showEntryForm && (
-        <EntryForm
-          entry={editingEntry}
-          categories={categories.filter(c => c.id !== 'all')}
-          onSubmit={editingEntry ? handleUpdateEntry : handleAddEntry}
-          onCancel={() => {
-            setShowEntryForm(false);
-            setEditingEntry(null);
-          }}
-        />
-      )}
-
-      <div className={styles.entriesGrid}>
-        {filteredEntries.length === 0 ? (
-          <div className={styles.emptyState}>
-            <span className={styles.emptyIcon}>📭</span>
-            <p>No entries yet. {isAdmin && 'Start by adding your first entry!'}</p>
+              A collection of interesting quotes, notes, and thoughts.
+            </p>
           </div>
-        ) : (
-          filteredEntries.map(entry => (
-            <EntryCard
-              key={entry.id}
-              entry={entry}
-              category={categories.find(c => c.id === entry.category)}
-              isAdmin={isAdmin}
-              onEdit={() => handleEdit(entry)}
-              onDelete={() => handleDeleteEntry(entry.id)}
-              onTogglePin={() => togglePin(entry)}
+
+          {isAdmin && (
+            <button
+              className={styles.addButton}
+              onClick={() => {
+                setEditingEntry(null);
+                setShowEntryForm(true);
+              }}
+            >
+              + Add New Entry
+            </button>
+          )}
+
+          <div className={styles.categoryFilter}>
+            {categories.map(category => (
+              <button
+                key={category.id}
+                className={`${styles.categoryButton} ${
+                  selectedCategory === category.id ? styles.active : ''
+                }`}
+                onClick={() => setSelectedCategory(category.id)}
+              >
+                <span className={styles.categoryIcon}>{category.icon}</span>
+                {category.name}
+              </button>
+            ))}
+          </div>
+
+          {showEntryForm && (
+            <EntryForm
+              entry={editingEntry}
+              categories={categories.filter(c => c.id !== 'all')}
+              onSubmit={editingEntry ? handleUpdateEntry : handleAddEntry}
+              onCancel={() => {
+                setShowEntryForm(false);
+                setEditingEntry(null);
+              }}
             />
-          ))
-        )}
-      </div>
+          )}
+
+          <div className={styles.entriesGrid}>
+            {filteredEntries.length === 0 ? (
+              <div className={styles.emptyState}>
+                <span className={styles.emptyIcon}>📭</span>
+                <p>No entries yet. {isAdmin && 'Start by adding your first entry!'}</p>
+              </div>
+            ) : (
+              filteredEntries.map((entry, i) => (
+                <EntryCard
+                  key={entry.id}
+                  entry={entry}
+                  index={i}
+                  category={categories.find(c => c.id === entry.category)}
+                  isAdmin={isAdmin}
+                  onEdit={() => handleEdit(entry)}
+                  onDelete={() => handleDeleteEntry(entry.id)}
+                  onTogglePin={() => togglePin(entry)}
+                />
+              ))
+            )}
+          </div>
         </div>
       )}
     </section>

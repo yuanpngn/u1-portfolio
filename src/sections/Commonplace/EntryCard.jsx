@@ -2,7 +2,9 @@ import { useState } from 'react';
 import styles from './EntryCardStyles.module.css';
 import Portal from '../../common/Portal';
 
-function EntryCard({ entry, category, isAdmin, onEdit, onDelete, onTogglePin }) {
+const ACCENT_CLASSES = ['accentRed', 'accentBlue', 'accentYellow'];
+
+function EntryCard({ entry, category, index = 0, isAdmin, onEdit, onDelete, onTogglePin }) {
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [showFullEntry, setShowFullEntry] = useState(false);
@@ -38,13 +40,14 @@ function EntryCard({ entry, category, isAdmin, onEdit, onDelete, onTogglePin }) 
     setShowFullEntry(true);
   };
 
+  const accentClass = styles[ACCENT_CLASSES[index % ACCENT_CLASSES.length]];
+
   return (
     <>
-      <div 
-        className={styles.card} 
+      <div
+        className={`${styles.card} ${accentClass}`}
         data-pinned={entry.isPinned || false}
         onClick={handleCardClick}
-        style={{ cursor: 'pointer' }}
       >
         <div className={styles.cardHeader}>
           <div className={styles.categoryBadge}>

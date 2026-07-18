@@ -5,7 +5,7 @@ import styles from './HeroStyles.module.css';
 import Crown from '../../common/Crown';
 import CV from '../../assets/cv.pdf';
 
-const HERO_CHIPS = ['Mixed Reality + Unity', 'VBA Automation', 'Node.js + MongoDB', 'Java + Spring Boot'];
+const HERO_CHIPS = ['Software Engineering', 'Automation', 'Mixed Reality + Unity', 'Drones', 'Web Development'];
 
 function Hero() {
   const [heroData, setHeroData] = useState({

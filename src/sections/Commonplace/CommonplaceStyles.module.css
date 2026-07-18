@@ -2,17 +2,14 @@
   display: flex;
   flex-direction: column;
   padding: 20px;
-  animation: fadeInUp 0.8s ease 0.3s both;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .collapsed {
-  min-height: auto;
   padding: 20px;
 }
 
 .expanded {
-  padding: 60px 20px;
+  padding: 150px clamp(20px, 4vw, 48px);
 }
 
 .toggleButton {
@@ -20,55 +17,46 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 14px 32px;
+  padding: 12px 28px;
   margin: 0 auto;
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(40px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 100px;
-  color: var(--text-secondary);
-  font-size: 14px;
-  font-weight: 500;
+  background: transparent;
+  border: 2px solid var(--dc-ink);
+  border-radius: 999px;
+  color: var(--dc-ink);
+  font: 700 13px Kalam, cursive;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  max-width: fit-content;
-  letter-spacing: 0.02em;
+  transition: transform 0.2s ease;
 }
 
 .toggleButton:hover {
-  background: rgba(139, 92, 246, 0.08);
-  border-color: rgba(139, 92, 246, 0.2);
-  color: var(--text-color);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.15);
+  transform: translateY(-2px);
 }
 
 .toggleIcon {
   font-size: 10px;
-  opacity: 0.6;
-  transition: transform 0.3s ease;
-}
-
-.toggleText {
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  opacity: 0.8;
-}
-
-.toggleEmoji {
-  font-size: 16px;
   opacity: 0.7;
 }
 
+.toggleText {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.toggleEmoji {
+  font-size: 15px;
+}
+
 .content {
+  max-width: 1180px;
+  margin: 44px auto 0;
+  width: 100%;
   animation: expandContent 0.5s ease both;
 }
 
 @keyframes expandContent {
   from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(-16px);
   }
   to {
     opacity: 1;
@@ -78,180 +66,122 @@
 
 .header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
+}
+
+.eyebrow {
+  font: 700 13px Kalam, cursive;
+  color: var(--dc-red);
+  letter-spacing: 0.05em;
+  margin-bottom: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+.headingWrap {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.h2 {
+  font: 400 clamp(28px, 3.4vw, 44px) / 1.15 'Archivo Black', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--dc-ink);
+  margin: 0;
+  transform: rotate(-0.6deg);
+  display: inline-block;
+}
+
+.underline {
+  position: absolute;
+  left: 2px;
+  bottom: -10px;
+  width: 55%;
+  height: 5px;
+  background: var(--dc-blue);
+  transform: rotate(-1deg);
 }
 
 .subtitle {
-  font-size: 18px;
-  color: var(--text-secondary);
-  margin-top: 12px;
-}
-
-.adminControls {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
-}
-
-.addButton,
-.logoutButton {
-  padding: 12px 24px;
-  border-radius: 20px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 2px solid;
+  font: 400 17px / 1.6 Manrope, sans-serif;
+  color: var(--dc-ink-soft);
+  margin: 18px auto 0;
+  max-width: 520px;
 }
 
 .addButton {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0.1));
-  color: var(--text-color);
-  border-color: rgba(139, 92, 246, 0.4);
-  backdrop-filter: blur(20px);
-}
-
-.addButton:hover {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(139, 92, 246, 0.2));
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
-}
-
-.logoutButton {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-secondary);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-.logoutButton:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-color);
+  display: block;
+  margin: 0 auto 24px;
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: 2px solid var(--dc-ink);
+  background: transparent;
+  color: var(--dc-ink);
+  font: 700 13.5px Kalam, cursive;
+  cursor: pointer;
 }
 
 .categoryFilter {
   display: flex;
-  gap: 12px;
-  margin-bottom: 40px;
+  gap: 10px;
   flex-wrap: wrap;
   justify-content: center;
+  margin: 0 0 36px;
 }
 
 .categoryButton {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 20px;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
-  border: 1.5px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  color: var(--text-secondary);
-  font-size: 15px;
-  font-weight: 500;
+  font: 700 13.5px Kalam, cursive;
+  padding: 10px 18px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.categoryButton:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
-  color: var(--text-color);
-  transform: translateY(-2px);
+  border: 2px solid var(--dc-ink);
+  background: transparent;
+  color: var(--dc-ink);
 }
 
 .categoryButton.active {
-  background: rgba(139, 92, 246, 0.15);
-  border-color: rgba(139, 92, 246, 0.4);
-  color: var(--text-color);
+  background: var(--dc-ink);
+  color: var(--dc-cream);
 }
 
 .categoryIcon {
-  font-size: 18px;
+  font-size: 15px;
 }
 
 .entriesGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 24px;
-  margin-top: 20px;
 }
 
 .emptyState {
   grid-column: 1 / -1;
   text-align: center;
   padding: 60px 20px;
-  color: var(--text-secondary);
 }
 
 .emptyIcon {
-  font-size: 64px;
+  font-size: 56px;
   display: block;
   margin-bottom: 16px;
-  opacity: 0.5;
+  opacity: 0.6;
 }
 
 .emptyState p {
-  font-size: 16px;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Light mode */
-[data-theme='light'] .toggleButton {
-  background: rgba(0, 0, 0, 0.02);
-  border-color: rgba(0, 0, 0, 0.06);
-  color: var(--text-secondary);
-}
-
-[data-theme='light'] .toggleButton:hover {
-  background: rgba(139, 92, 246, 0.05);
-  border-color: rgba(139, 92, 246, 0.15);
-  color: var(--text-color);
-}
-
-[data-theme='light'] .categoryButton {
-  background: rgba(0, 0, 0, 0.03);
-  border-color: rgba(0, 0, 0, 0.08);
-}
-
-[data-theme='light'] .categoryButton:hover {
-  background: rgba(0, 0, 0, 0.05);
-  border-color: rgba(0, 0, 0, 0.12);
-}
-
-[data-theme='light'] .categoryButton.active {
-  background: rgba(139, 92, 246, 0.1);
-  border-color: rgba(139, 92, 246, 0.3);
-}
-
-[data-theme='light'] .addButton {
-  background: rgba(139, 92, 246, 0.1);
-  border-color: rgba(139, 92, 246, 0.3);
-}
-
-[data-theme='light'] .logoutButton {
-  background: rgba(0, 0, 0, 0.03);
-  border-color: rgba(0, 0, 0, 0.1);
+  font: 400 15px / 1.6 Manrope, sans-serif;
+  color: var(--dc-muted);
 }
 
 @media (width >= 800px) {
-  .expanded {
-    padding: 80px 40px;
-  }
-
   .entriesGrid {
-    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 28px;
   }
 }
