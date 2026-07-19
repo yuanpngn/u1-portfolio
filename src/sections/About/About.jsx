@@ -8,7 +8,7 @@ import Crown from '../../common/Crown';
 import defaultPhoto from '../../assets/yuan.png';
 
 const DEFAULT_PARAGRAPHS = [
-  "I started out chasing the moment code turns into something you can touch — a button that responds, a screen that reacts. That curiosity is why I'm studying Software Technology at De La Salle University, and why I still can't resist opening dev tools on a page I like.",
+  "I started out chasing the moment code turns into something you can touch — a button that responds, a screen that reacts. That curiosity is why I studied Software Technology at De La Salle University (graduating this October), and why I still can't resist opening dev tools on a page I like.",
   "Since then I've built across the stack — automation tooling at HSBC, production backend work at Manulife, a full-stack inventory system for a startup client — and outside it, into research: a mixed-reality drone system that treats hardware as a performance partner.",
   "What ties it together is a bias for shipping things that hold up under real use — readable code, tested assumptions, and interfaces that work for the person who didn't design them. That's the standard I hold every project to.",
 ];

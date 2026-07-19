@@ -10,9 +10,9 @@ const HERO_CHIPS = ['Software Engineering', 'Automation', 'Mixed Reality + Unity
 function Hero() {
   const [heroData, setHeroData] = useState({
     name: 'Yuan Pangan',
-    title: 'Software engineer building across mixed reality, automation, and full-stack systems.',
+    title: 'Software Engineer — graduating October 2026, open to full-time roles.',
     description:
-      'From automating BAU workflows at HSBC to building a mixed-reality drone performance system for my thesis — I like shipping things that hold up under real use.',
+      'Looking for backend, full-stack, or XR/mixed-reality engineering roles — based in Manila, open to remote. Let\'s talk.',
   });
   const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
 
@@ -53,7 +53,7 @@ function Hero() {
         <div>
           <div className={styles.eyebrow}>
             <span className={styles.pulseDot} />
-            CS · Software Technology · DLSU
+            Open to Work · Grad Oct 2026
           </div>
           <h1 className={styles.name}>{heroData.name}</h1>
           <p className={styles.tagline}>{heroData.title}</p>

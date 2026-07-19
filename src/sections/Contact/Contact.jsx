@@ -45,8 +45,9 @@ function Contact() {
           <div className={styles.underline} />
         </div>
         <p className={styles.sub}>
-          Open to software engineering, AI, and XR opportunities — internships, research
-          collaborations, or just a good conversation about building things.
+          Graduating this October and actively looking for full-time Software Engineer roles —
+          open to backend, full-stack, or XR/mixed-reality work, or just a good conversation
+          about building things.
         </p>
         <a href="mailto:yumiannpangan@gmail.com" data-cursor-hover="true" className={styles.email}>
           yumiannpangan@gmail.com

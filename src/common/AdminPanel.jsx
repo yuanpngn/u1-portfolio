@@ -238,7 +238,7 @@ function AdminPanel() {
               </div>
 
               <div className={styles.note}>
-                <strong>Note:</strong> Projects, Skills, Experience, Research, and Achievements sections can be edited individually through their respective admin controls when logged in.
+                <strong>Note:</strong> Projects, Skills, Experience, and Achievements sections can be edited individually through their respective admin controls when logged in.
               </div>
             </div>
           )}

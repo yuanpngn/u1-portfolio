@@ -41,8 +41,8 @@ const projects = [
   {
     title: "MR. Drone (Thesis) — Mixed Reality Autonomous Drone Interaction System",
     shortDesc: "Mixed Reality system integrating autonomous drones into interactive performances.",
-    fullDesc: "Designed and developed a Mixed Reality (MR) system that integrates autonomous drones with interactive XR environments using Unity, C#, and Python. Built a custom drone platform using Bitcraze Crazyflie hardware and integrated physical drone movement with virtual environments through real-time communication.",
-    technologies: ["Unity", "C#", "Python", "XR", "AR Foundation", "Bitcraze Crazyflie", "HCI"],
+    fullDesc: "Designed and developed a Mixed Reality (MR) system that integrates autonomous drones with interactive XR environments using Unity, C#, and Python, for my undergraduate thesis. Built a custom drone platform using Bitcraze Crazyflie hardware and integrated physical drone movement with virtual environments through real-time communication. Key finding: a working MR system where the physical drone's movement responds to and shapes live improvisational performance.",
+    technologies: ["Unity", "C#", "Python", "XR", "AR Foundation", "Bitcraze Crazyflie", "HCI", "Spatial Computing"],
     github: "https://github.com/yuanpngn/CF_MRDrone",
     highlights: [
       "Built a custom drone platform using Bitcraze Crazyflie hardware, integrated with virtual environments through real-time communication",
@@ -146,12 +146,12 @@ const experiences = [
 const portfolio = {
   hero: {
     name: 'Yuan Pangan',
-    title: 'Software engineer building across mixed reality, automation, and full-stack systems.',
-    description: 'From automating BAU workflows at HSBC to building a mixed-reality drone performance system for my thesis — I like shipping things that hold up under real use.'
+    title: 'Software Engineer — graduating October 2026, open to full-time roles.',
+    description: 'Looking for backend, full-stack, or XR/mixed-reality engineering roles — based in Manila, open to remote. Let\'s talk.'
   },
   about: {
     paragraphs: [
-      "I started out chasing the moment code turns into something you can touch — a button that responds, a screen that reacts. That curiosity is why I'm studying Software Technology at De La Salle University, and why I still can't resist opening dev tools on a page I like.",
+      "I started out chasing the moment code turns into something you can touch — a button that responds, a screen that reacts. That curiosity is why I studied Software Technology at De La Salle University (graduating this October), and why I still can't resist opening dev tools on a page I like.",
       "Since then I've built across the stack — automation tooling at HSBC, production backend work at Manulife, a full-stack inventory system for a startup client — and outside it, into research: a mixed-reality drone system that treats hardware as a performance partner.",
       "What ties it together is a bias for shipping things that hold up under real use — readable code, tested assumptions, and interfaces that work for the person who didn't design them. That's the standard I hold every project to."
     ],
@@ -163,25 +163,8 @@ const portfolio = {
   }
 };
 
-// Reference data for the 'research' and 'achievements' collections (add via the admin
-// panel — Research and Achievements sections — since this script does not write to Firestore).
-const research = [
-  {
-    title: 'MR. Drone — Mixed Reality Autonomous Drone Interaction',
-    type: 'UNDERGRADUATE THESIS',
-    summary: 'Explores drones as interactive performance avatars, combining autonomous flight with spatial, embodied interaction design.',
-    methods: ['Human-Computer Interaction', 'Spatial Computing', 'Embodied Interaction'],
-    findings: "A working MR system where a physical drone's movement responds to and shapes live improvisational performance."
-  },
-  {
-    title: 'Web Accessibility Evaluation Methodology',
-    type: 'APPLIED RESEARCH',
-    summary: 'A WCAG 2.2 AA audit approach combining automated scanning with manual assistive-technology testing.',
-    methods: ['WCAG 2.2', 'Manual Testing', 'Automated Testing'],
-    findings: 'Automated tools surfaced under half of the real barriers found through manual keyboard and screen-reader passes.'
-  }
-];
-
+// Reference data for the 'achievements' collection (add via the admin panel —
+// Achievements section — since this script does not write to Firestore).
 const achievements = [
   { title: "Dean's List", org: 'De La Salle University', note: 'Add your qualifying term(s) here.', dashed: true },
   { title: 'IBM Software Engineering Externship', org: 'IBM', note: 'Java, web & AI application training — completed.' },
@@ -212,12 +195,6 @@ async function seedData() {
       await addDoc(collection(db, 'experiences'), exp);
     }
     console.log('✓ Experiences seeded');
-
-    console.log('Seeding research...');
-    for (const item of research) {
-      await addDoc(collection(db, 'research'), item);
-    }
-    console.log('✓ Research seeded');
 
     console.log('Seeding achievements...');
     for (const item of achievements) {
