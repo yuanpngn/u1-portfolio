@@ -8,6 +8,7 @@ import ProjectModal from '../../common/ProjectModal';
 import { useReveal } from '../../common/useReveal';
 import Portal from '../../common/Portal';
 import Crown from '../../common/Crown';
+import GithubActivity from './GithubActivity';
 
 function Projects() {
   const { isAdmin } = useAdmin();
@@ -171,6 +172,8 @@ function Projects() {
             </div>
           ))}
         </div>
+
+        <GithubActivity />
       </div>
 
       {selectedProject && (
